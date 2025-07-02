@@ -11,13 +11,13 @@ namespace HouseRentAPI.Models
         public decimal MonthlyRent { get; set; }
         public string? TermsAndConditions { get; set; }
         public string? LeaseDocumentPath { get; set; }
+        public DateTime CreatedAt { get; internal set; }
         public int PropertyId { get; set; }
         public int TenantId { get; set; }
         public Property Property { get; set; }
         public User Tenant { get; set; }
 
         // Add the missing RentPayments property
-        public ICollection<RentPayment> RentPayments { get; set; }
-        public DateTime CreatedAt { get; internal set; }
+        public ICollection<RentPayment> RentPayments { get; set; }        
     }
 }

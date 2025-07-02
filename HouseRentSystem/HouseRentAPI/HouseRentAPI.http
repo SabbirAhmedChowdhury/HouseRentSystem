@@ -8,9 +8,9 @@ POST {{rootURL}}/api/user/register
 Content-Type: application/json
 {
   "fullName": "Sabbir Ahmed",
-  "email": "sabbir@example.com",
+  "email": "sabbir014@gmail.com",
   "password": "P@ssw0rd123",
-  "phoneNumber": "+8801712345678",
+  "phoneNumber": "+8801738034915",
   "nid": "1234567890123",
   "role": "Tenant"
 }
@@ -19,7 +19,7 @@ Content-Type: application/json
 POST {{rootURL}}/api/user/login
 Content-Type: application/json
 {
-  "email": "sabbir@example.com",
+  "email": "sabbir014@gmail.com",
   "password": "P@ssw0rd123"
 }
 
@@ -32,8 +32,8 @@ PUT {{rootURL}}/api/user/profile
 Content-Type: application/json
 {
   "fullName": "Sabbir Ahmed Chowdhury",
-  "phoneNumber": "+8801712345678",
+  "phoneNumber": "+8801738034915",
   "currentPassword": "P@ssw0rd123",
-  "newPassword": "NewP@ssw0rd456"
+  "newPassword": "P@ssw0rd1234"
 }
 

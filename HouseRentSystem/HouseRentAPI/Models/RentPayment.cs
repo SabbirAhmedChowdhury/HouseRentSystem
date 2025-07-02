@@ -17,13 +17,13 @@ namespace HouseRentAPI.Models
         public required string PaymentMethod { get; set; }
         public string? PaymentSlipPath { get; set; } // Uploaded slip path
         public PaymentStatus Status { get; set; } = PaymentStatus.Pending; // Paid/Unpaid
+        public DateTime CreatedAt { get; internal set; }
 
         // Foreign Keys
         [ForeignKey("Lease")]
         public int LeaseId { get; set; }
 
         // Navigation Property
-        public Lease Lease { get; set; }
-        public DateTime CreatedAt { get; internal set; }
+        public Lease Lease { get; set; }        
     }
 }

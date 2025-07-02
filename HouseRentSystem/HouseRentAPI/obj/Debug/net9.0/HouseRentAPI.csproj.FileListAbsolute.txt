@@ -182,3 +182,4 @@ D:\JU Masters\Project\HouseRentSystem\HouseRentSystem\HouseRentAPI\obj\Debug\net
 D:\JU Masters\Project\HouseRentSystem\HouseRentSystem\HouseRentAPI\obj\Debug\net9.0\HouseRentAPI.genruntimeconfig.cache
 D:\JU Masters\Project\HouseRentSystem\HouseRentSystem\HouseRentAPI\obj\Debug\net9.0\ref\HouseRentAPI.dll
 D:\JU Masters\Project\HouseRentSystem\HouseRentSystem\HouseRentAPI\bin\Debug\net9.0\Scalar.AspNetCore.dll
+D:\JU Masters\Project\HouseRentSystem\HouseRentSystem\HouseRentAPI\bin\Debug\net9.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll

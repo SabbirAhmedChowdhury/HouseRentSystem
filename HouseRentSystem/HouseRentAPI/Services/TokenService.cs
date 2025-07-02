@@ -3,7 +3,6 @@ using HouseRentAPI.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Security.Cryptography;
 using System.Text;
 
 namespace HouseRentAPI.Services
@@ -88,28 +87,6 @@ namespace HouseRentAPI.Services
             {
                 return false;
             }
-        }
-
-        // Optional: Refresh Token Generation
-        public string GenerateRefreshToken()
-        {
-            var randomNumber = new byte[32];
-            using var rng = RandomNumberGenerator.Create();
-            rng.GetBytes(randomNumber);
-            return Convert.ToBase64String(randomNumber);
-        }
-
-        // Optional: Get User ID from token
-        public int? GetUserIdFromToken(string token)
-        {
-            var principal = GetPrincipalFromToken(token);
-            var userIdClaim = principal.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            if (int.TryParse(userIdClaim, out var userId))
-            {
-                return userId;
-            }
-            return null;
         }
 
         public async Task<string> GenerateTokenAsync(User user)
