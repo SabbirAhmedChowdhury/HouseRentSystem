@@ -1,0 +1,39 @@
+@rootURL = http://localhost:5286
+
+GET {{rootURL}}/weatherforecast/
+Accept: application/json
+
+###
+POST {{rootURL}}/api/user/register
+Content-Type: application/json
+{
+  "fullName": "Sabbir Ahmed",
+  "email": "sabbir@example.com",
+  "password": "P@ssw0rd123",
+  "phoneNumber": "+8801712345678",
+  "nid": "1234567890123",
+  "role": "Tenant"
+}
+
+###
+POST {{rootURL}}/api/user/login
+Content-Type: application/json
+{
+  "email": "sabbir@example.com",
+  "password": "P@ssw0rd123"
+}
+
+###
+GET {{rootURL}}/api/user/profile
+Accept: application/json
+
+###
+PUT {{rootURL}}/api/user/profile
+Content-Type: application/json
+{
+  "fullName": "Sabbir Ahmed Chowdhury",
+  "phoneNumber": "+8801712345678",
+  "currentPassword": "P@ssw0rd123",
+  "newPassword": "NewP@ssw0rd456"
+}
+
