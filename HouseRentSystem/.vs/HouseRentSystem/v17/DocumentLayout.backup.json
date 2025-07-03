@@ -3,24 +3,28 @@
   "WorkspaceRootPath": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{1A93F4CE-CD3E-403F-A117-EFEE0C075B33}|HouseRentSystemAPI.Tests\\HouseRentSystemAPI.Tests.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentsystemapi.tests\\userscontrollertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{1A93F4CE-CD3E-403F-A117-EFEE0C075B33}|HouseRentSystemAPI.Tests\\HouseRentSystemAPI.Tests.csproj|solutionrelative:houserentsystemapi.tests\\userscontrollertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|solutionrelative:houserentapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentapi\\dtos\\errorresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|solutionrelative:houserentapi\\dtos\\errorresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentapi\\services\\propertyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|solutionrelative:houserentapi\\services\\propertyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentapi\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|solutionrelative:houserentapi\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|solutionrelative:houserentapi\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{1A93F4CE-CD3E-403F-A117-EFEE0C075B33}|HouseRentSystemAPI.Tests\\HouseRentSystemAPI.Tests.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentsystemapi.tests\\userscontrollertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{1A93F4CE-CD3E-403F-A117-EFEE0C075B33}|HouseRentSystemAPI.Tests\\HouseRentSystemAPI.Tests.csproj|solutionrelative:houserentsystemapi.tests\\userscontrollertests.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentapi\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|solutionrelative:houserentapi\\interfaces\\iuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentapi\\dtos\\errorresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|solutionrelative:houserentapi\\dtos\\errorresponse.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{9D1D3872-B9FA-4238-B369-9E422620C6CD}|HouseRentAPI\\HouseRentAPI.csproj|d:\\ju masters\\project\\houserentsystem\\houserentsystem\\houserentapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -54,37 +58,50 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 4,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 2,
+              "Title": "PropertyService.cs",
+              "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Services\\PropertyService.cs",
+              "RelativeDocumentMoniker": "HouseRentAPI\\Services\\PropertyService.cs",
+              "ToolTip": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Services\\PropertyService.cs",
+              "RelativeToolTip": "HouseRentAPI\\Services\\PropertyService.cs",
+              "ViewState": "AgIAABgAAAAAAAAAAAAowAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2025-07-03T00:52:54.963Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "ErrorResponse.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\DTOs\\ErrorResponse.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\DTOs\\ErrorResponse.cs",
               "ToolTip": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\DTOs\\ErrorResponse.cs",
               "RelativeToolTip": "HouseRentAPI\\DTOs\\ErrorResponse.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-03T00:31:06.482Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 4,
               "Title": "UsersControllerTests.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentSystemAPI.Tests\\UsersControllerTests.cs",
               "RelativeDocumentMoniker": "HouseRentSystemAPI.Tests\\UsersControllerTests.cs",
               "ToolTip": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentSystemAPI.Tests\\UsersControllerTests.cs",
               "RelativeToolTip": "HouseRentSystemAPI.Tests\\UsersControllerTests.cs",
-              "ViewState": "AgIAADkBAAAAAAAAAAAQwFMBAABIAAAAAAAAAA==",
+              "ViewState": "AgIAAI4AAAAAAAAAAAAcwFMBAABIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-07-02T23:54:41.223Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "PaymentService.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Services\\PaymentService.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\Services\\PaymentService.cs",
@@ -92,25 +109,24 @@
               "RelativeToolTip": "HouseRentAPI\\Services\\PaymentService.cs",
               "ViewState": "AgIAAIMAAAAAAAAAAAAAwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-07-02T02:06:27.033Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-07-02T02:06:27.033Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 0,
               "Title": "UserController.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\Controllers\\UserController.cs",
               "ToolTip": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Controllers\\UserController.cs",
               "RelativeToolTip": "HouseRentAPI\\Controllers\\UserController.cs",
-              "ViewState": "AgIAAGkAAAAAAAAAAAAawHoAAAArAAAAAAAAAA==",
+              "ViewState": "AgIAAE8AAAAAAAAAAAAEwHoAAAArAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2025-06-28T11:57:55.796Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 3,
               "Title": "UserService.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Services\\UserService.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\Services\\UserService.cs",
@@ -123,7 +139,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "HouseRentAPI.http",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\HouseRentAPI.http",
               "RelativeDocumentMoniker": "HouseRentAPI\\HouseRentAPI.http",
@@ -131,12 +147,11 @@
               "RelativeToolTip": "HouseRentAPI\\HouseRentAPI.http",
               "ViewState": "AgIAAAcAAAAAAAAAAAAQwCcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003502|",
-              "WhenOpened": "2025-06-28T12:19:36.739Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-28T12:19:36.739Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 9,
               "Title": "TokenService.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Services\\TokenService.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\Services\\TokenService.cs",
@@ -144,12 +159,11 @@
               "RelativeToolTip": "HouseRentAPI\\Services\\TokenService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAASAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-28T11:59:20.001Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-28T11:59:20.001Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 5,
               "Title": "IUserService.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Interfaces\\IUserService.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\Interfaces\\IUserService.cs",
@@ -157,12 +171,11 @@
               "RelativeToolTip": "HouseRentAPI\\Interfaces\\IUserService.cs",
               "ViewState": "AgIAAAYAAAAAAAAAAIA1wA8AAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-28T12:01:19.688Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-28T12:01:19.688Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Program.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\Program.cs",
@@ -170,12 +183,11 @@
               "RelativeToolTip": "HouseRentAPI\\Program.cs",
               "ViewState": "AgIAACcAAAAAAAAAAAAAABkAAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-28T11:56:34.354Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-28T11:56:34.354Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 11,
               "Title": "ITokenService.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Interfaces\\ITokenService.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\Interfaces\\ITokenService.cs",
@@ -183,12 +195,11 @@
               "RelativeToolTip": "HouseRentAPI\\Interfaces\\ITokenService.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAqwAoAAAAVAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-28T12:02:37.318Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-28T12:02:37.318Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 10,
               "Title": "UserProfile.cs",
               "DocumentMoniker": "D:\\JU Masters\\Project\\HouseRentSystem\\HouseRentSystem\\HouseRentAPI\\Profiles\\UserProfile.cs",
               "RelativeDocumentMoniker": "HouseRentAPI\\Profiles\\UserProfile.cs",
@@ -196,8 +207,7 @@
               "RelativeToolTip": "HouseRentAPI\\Profiles\\UserProfile.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAJAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2025-06-28T11:54:34.613Z",
-              "EditorCaption": ""
+              "WhenOpened": "2025-06-28T11:54:34.613Z"
             }
           ]
         }
