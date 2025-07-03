@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HouseRentAPI.DTOs;
 using HouseRentAPI.DTOs.User;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
@@ -48,11 +49,11 @@ namespace HouseRentAPI.Controllers
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new ErrorResponse { Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new ErrorResponse { Message = ex.Message });
             }
         }
 
@@ -75,11 +76,11 @@ namespace HouseRentAPI.Controllers
             }
             catch (UnauthorizedAccessException ex)
             {
-                return Unauthorized(new { message = ex.Message });
+                return Unauthorized(new ErrorResponse { Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new ErrorResponse { Message = ex.Message });
             }
         }
 
@@ -95,11 +96,11 @@ namespace HouseRentAPI.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new ErrorResponse { Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new ErrorResponse { Message = ex.Message });
             }
         }
 
@@ -128,15 +129,15 @@ namespace HouseRentAPI.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new ErrorResponse { Message = ex.Message });
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new ErrorResponse { Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new ErrorResponse { Message = ex.Message });
             }
         }
 
@@ -151,11 +152,11 @@ namespace HouseRentAPI.Controllers
             }
             catch (KeyNotFoundException ex)
             {
-                return NotFound(new { message = ex.Message });
+                return NotFound(new ErrorResponse { Message = ex.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = ex.Message });
+                return StatusCode(500, new ErrorResponse { Message = ex.Message });
             }
         }
     }
