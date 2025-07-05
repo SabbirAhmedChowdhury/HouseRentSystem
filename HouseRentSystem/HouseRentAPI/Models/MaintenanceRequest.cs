@@ -12,7 +12,7 @@ namespace HouseRentAPI.Models
         [Required]
         public string Description { get; set; }
 
-        public DateTime RequestDate { get; set; } = DateTime.UtcNow;
+        public DateTime RequestDate { get; set; } = DateTime.Now;
         public DateTime? CompletionDate { get; set; }
         public MaintenanceStatus Status { get; set; } = MaintenanceStatus.Pending; // Pending/InProgress/Resolved
 

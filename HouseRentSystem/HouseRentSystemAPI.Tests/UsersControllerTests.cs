@@ -2,7 +2,6 @@
 using FluentAssertions;
 using HouseRentAPI.Controllers;
 using HouseRentAPI.DTOs;
-using HouseRentAPI.DTOs.User;
 using HouseRentAPI.Enums;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
@@ -11,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using System.Security.Claims;
 
-namespace HouseRentSystem.Tests.Controllers
+namespace HouseRentSystemAPI.Tests
 {
     public class UserControllerTests
     {

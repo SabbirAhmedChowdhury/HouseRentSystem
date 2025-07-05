@@ -13,5 +13,8 @@ namespace HouseRentAPI.Interfaces
         Task SendRentReminderAsync(int paymentId);
         Task<IEnumerable<RentPayment>> GetPaymentsByDueDateAsync(DateTime dueDate);
         Task<RentPayment> GetPaymentAsync(int paymentId);
+        Task<IEnumerable<RentPayment>> GetPaymentHistoryAsync(int tenantId);
+        Task<decimal> CalculateLateFeeAsync(int id);
+        Task VerifyPaymentAsync(int id);
     }
 }

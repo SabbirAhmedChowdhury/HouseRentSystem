@@ -135,7 +135,7 @@ namespace HouseRentAPI.Services
             document.Add(new Paragraph($"Receipt No: {payment.PaymentId}")
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFont(_regularFont));
-            document.Add(new Paragraph($"Date: {DateTime.UtcNow:dd MMM yyyy}")
+            document.Add(new Paragraph($"Date: {DateTime.Now:dd MMM yyyy}")
                 .SetTextAlignment(TextAlignment.CENTER)
                 .SetFont(_regularFont));
 

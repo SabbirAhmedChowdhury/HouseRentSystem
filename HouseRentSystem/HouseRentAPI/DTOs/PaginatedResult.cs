@@ -1,6 +1,5 @@
-﻿namespace HouseRentAPI.Models
+﻿namespace HouseRentAPI.DTOs
 {
-    // Pagination DTO
     public class PaginatedResult<T>
     {
         public IEnumerable<T> Items { get; set; }

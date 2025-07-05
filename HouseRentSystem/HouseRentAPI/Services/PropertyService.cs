@@ -1,7 +1,10 @@
-﻿using HouseRentAPI.Enums;
+﻿using HouseRentAPI.DTOs;
+using HouseRentAPI.Enums;
+using HouseRentAPI.Exceptions;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
 using Microsoft.EntityFrameworkCore;
+using static iText.StyledXmlParser.Jsoup.Select.Evaluator;
 
 namespace HouseRentAPI.Services
 {
@@ -16,22 +19,27 @@ namespace HouseRentAPI.Services
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<Property> CreatePropertyAsync(Property property, int landlordId)
+        public async Task<Property> CreatePropertyAsync(Property property)
         {
             var propertyRepo = _unitOfWork.GetRepository<Property>();
             var userRepo = _unitOfWork.GetRepository<User>();
 
-            var landlord = await userRepo.GetByIdAsync(landlordId);
+            var landlord = await userRepo.GetByIdAsync(property.LandlordId);
             if (landlord == null || landlord.Role != UserRole.Landlord)
                 throw new InvalidOperationException("Invalid landlord");
 
-            property.LandlordId = landlordId;
-            property.CreatedAt = DateTime.UtcNow;
+            property.CreatedAt = DateTime.Now;
 
             await propertyRepo.AddAsync(property);
             await _unitOfWork.SaveChangesAsync();
 
             return property;
+        }
+
+        public async Task<IEnumerable<Property>> GetAllPropertiesAsync()
+        {
+            var propertyRepo = _unitOfWork.GetRepository<Property>();
+            return await propertyRepo.GetAllAsync();
         }
 
         public async Task UpdatePropertyAsync(Property property)
@@ -46,7 +54,8 @@ namespace HouseRentAPI.Services
             var propertyRepo = _unitOfWork.GetRepository<Property>();
             var property = await propertyRepo.GetByIdAsync(id);
 
-            if (property == null) throw new KeyNotFoundException("Property not found");
+            //if (property == null) throw new KeyNotFoundException("Property not found");
+            if (property == null) throw new NotFoundException(nameof(Property), id);
 
             propertyRepo.Remove(property);
             await _unitOfWork.SaveChangesAsync();
@@ -168,5 +177,13 @@ namespace HouseRentAPI.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
+        public async Task<bool> IsOwner(int propertyId, int userId)
+        {
+            var property = await _unitOfWork.GetRepository<Property>()
+                .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
+
+            return property?.LandlordId == userId;
+        }
+        
     }
 }

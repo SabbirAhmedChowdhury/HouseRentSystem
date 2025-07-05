@@ -30,7 +30,7 @@ namespace HouseRentAPI.Services
                 var paymentService = scope.ServiceProvider.GetRequiredService<IPaymentService>();
 
                 // 1. Send reminders for payments due in 3 days
-                var reminderDate = DateTime.UtcNow.AddDays(3).Date;
+                var reminderDate = DateTime.Now.AddDays(3).Date;
                 var payments = await paymentService.GetPaymentsByDueDateAsync(reminderDate);
 
                 foreach (var payment in payments)
@@ -41,7 +41,7 @@ namespace HouseRentAPI.Services
                 _logger.LogInformation($"Sent {payments.Count()} rent reminders for {reminderDate:yyyy-MM-dd}");
 
                 // 2. Check for overdue payments
-                var today = DateTime.UtcNow.Date;
+                var today = DateTime.Now.Date;
                 var overduePayments = await paymentService.GetPaymentsByDueDateAsync(today.AddDays(-1));
 
                 foreach (var payment in overduePayments)

@@ -28,7 +28,7 @@ namespace HouseRentAPI.Services
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddHours(
+                Expires = DateTime.Now.AddHours(
                     _configuration.GetValue<double>("Jwt:ExpireHours")),
                 SigningCredentials = credentials,
                 Issuer = _configuration["Jwt:Issuer"],

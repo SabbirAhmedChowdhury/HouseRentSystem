@@ -1,9 +1,4 @@
 ﻿using HouseRentAPI.Interfaces;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System.IO;
-using System.Threading.Tasks;
 
 namespace HouseRentAPI.Services
 {

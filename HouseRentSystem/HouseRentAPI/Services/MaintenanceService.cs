@@ -1,7 +1,7 @@
 ﻿using HouseRentAPI.Enums;
+using HouseRentAPI.Exceptions;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
-using Microsoft.EntityFrameworkCore;
 
 namespace HouseRentAPI.Services
 {
@@ -25,12 +25,13 @@ namespace HouseRentAPI.Services
             // Validate tenant and property
             var tenant = await userRepo.GetByIdAsync(request.TenantId);
             if (tenant == null || tenant.Role != UserRole.Tenant)
-                throw new InvalidOperationException("Invalid tenant");
+                throw new BadRequestException("Invalid tenant");
 
             var property = await propertyRepo.GetByIdAsync(request.PropertyId);
-            if (property == null) throw new KeyNotFoundException("Property not found");
+            //if (property == null) throw new KeyNotFoundException("Property not found");
+            if (property == null) throw new NotFoundException(nameof(Property), request.PropertyId);
 
-            request.RequestDate = DateTime.UtcNow;
+            request.RequestDate = DateTime.Now;
             request.Status = MaintenanceStatus.Pending;
 
             await requestRepo.AddAsync(request);
@@ -47,11 +48,12 @@ namespace HouseRentAPI.Services
             var requestRepo = _unitOfWork.GetRepository<MaintenanceRequest>();
             var request = await requestRepo.GetByIdAsync(requestId);
 
-            if (request == null) throw new KeyNotFoundException("Maintenance request not found");
+            //if (request == null) throw new KeyNotFoundException("Maintenance request not found");
+            if (request == null) throw new NotFoundException(nameof(MaintenanceRequest), requestId);
 
             request.Status = status;
             if (status == MaintenanceStatus.Resolved)
-                request.CompletionDate = DateTime.UtcNow;
+                request.CompletionDate = DateTime.Now;
 
             requestRepo.Update(request);
             await _unitOfWork.SaveChangesAsync();
@@ -94,10 +96,12 @@ namespace HouseRentAPI.Services
             var userRepo = _unitOfWork.GetRepository<User>();
 
             var request = await requestRepo.GetByIdAsync(requestId);
-            if (request == null) throw new KeyNotFoundException("Request not found");
+            //if (request == null) throw new KeyNotFoundException("Request not found");
+            if (request == null) throw new NotFoundException(nameof(MaintenanceRequest), requestId);
 
             var worker = await userRepo.GetByIdAsync(workerId);
-            if (worker == null) throw new KeyNotFoundException("Worker not found");
+            //if (worker == null) throw new KeyNotFoundException("Worker not found");
+            if (worker == null) throw new NotFoundException(nameof(MaintenanceRequest), requestId);
 
             request.AssignedWorkerId = workerId;
             request.Status = MaintenanceStatus.InProgress;
@@ -106,7 +110,7 @@ namespace HouseRentAPI.Services
             await _unitOfWork.SaveChangesAsync();
 
             // Notify worker
-            await NotifyWorkerAsync(requestId, workerId);
+            //await NotifyWorkerAsync(requestId, workerId);
         }
 
         private async Task NotifyLandlordAsync(MaintenanceRequest request, int landlordId)

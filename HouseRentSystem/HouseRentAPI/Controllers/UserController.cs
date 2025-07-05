@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using HouseRentAPI.DTOs;
-using HouseRentAPI.DTOs.User;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +43,7 @@ namespace HouseRentAPI.Controllers
                 {
                     Token = token,
                     UserProfile = _mapper.Map<UserProfileDto>(registeredUser),
-                    TokenExpiration = DateTime.UtcNow.AddHours(3)
+                    TokenExpiration = DateTime.Now.AddHours(3)
                 });
             }
             catch (InvalidOperationException ex)
@@ -71,7 +70,7 @@ namespace HouseRentAPI.Controllers
                 {
                     Token = token,
                     UserProfile = _mapper.Map<UserProfileDto>(user),
-                    TokenExpiration = DateTime.UtcNow.AddHours(3)
+                    TokenExpiration = DateTime.Now.AddHours(3)
                 });
             }
             catch (UnauthorizedAccessException ex)

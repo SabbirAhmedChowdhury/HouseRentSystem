@@ -1,5 +1,7 @@
 using HouseRentAPI.Data;
+using HouseRentAPI.Filters;
 using HouseRentAPI.Interfaces;
+using HouseRentAPI.Middleware;
 using HouseRentAPI.Models;
 using HouseRentAPI.Repositories;
 using HouseRentAPI.Services;
@@ -47,7 +49,12 @@ builder.Services.AddAuthentication(options =>
 // Add authorization services
 builder.Services.AddAuthorization();
 
-builder.Services.AddControllers();
+//builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add<ValidationFilter>();
+});
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
@@ -111,7 +118,17 @@ if (app.Environment.IsDevelopment())
                 .WithTheme(ScalarTheme.Mars)
                 .WithDefaultHttpClient(ScalarTarget.JavaScript, ScalarClient.HttpClient);
     });
+
+    app.UseDeveloperExceptionPage();    
 }
+else
+{
+    app.UseExceptionHandler("/Error");
+    app.UseHsts();
+}
+
+// Add global exception handling middleware
+app.UseMiddleware<ExceptionMiddleware>();
 
 //app.UseHttpsRedirection();
 

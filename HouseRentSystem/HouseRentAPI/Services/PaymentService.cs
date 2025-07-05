@@ -1,4 +1,5 @@
 ﻿using HouseRentAPI.Enums;
+using HouseRentAPI.Exceptions;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
 using Microsoft.EntityFrameworkCore;
@@ -38,7 +39,7 @@ namespace HouseRentAPI.Services
                 DueDate = dueDate,
                 AmountPaid = amount,
                 Status = PaymentStatus.Pending,
-                CreatedAt = DateTime.UtcNow,
+                CreatedAt = DateTime.Now,
                 PaymentMethod = "Unspecified"
             };
 
@@ -56,14 +57,24 @@ namespace HouseRentAPI.Services
             var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
             var payment = await paymentRepo.GetByIdAsync(paymentId);
 
-            if (payment == null) throw new KeyNotFoundException("Payment record not found");
+            //if (payment == null) throw new KeyNotFoundException("Payment record not found");
+            if (payment == null) throw new NotFoundException(nameof(RentPayment), paymentId);
+
+            // Validate status transition
+            if (payment.Status == PaymentStatus.Paid && status != PaymentStatus.Paid)
+            {
+                throw new BadRequestException(
+                    "Cannot change status of completed payment",
+                    "Payment has already been marked as paid");
+            }
+
 
             payment.Status = status;
 
             // Update payment date if status is changed to Paid
             if (status == PaymentStatus.Paid)
             {
-                payment.PaymentDate = DateTime.UtcNow;
+                payment.PaymentDate = DateTime.Now;
 
                 // Send payment confirmation
                 await SendPaymentConfirmationAsync(paymentId);
@@ -98,7 +109,7 @@ namespace HouseRentAPI.Services
             var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
             return await paymentRepo.FindAsync(p =>
                 p.Status == PaymentStatus.Pending &&
-                p.DueDate < DateTime.UtcNow
+                p.DueDate < DateTime.Now
             );
         }
 
@@ -149,7 +160,7 @@ namespace HouseRentAPI.Services
 
         private void ScheduleReminder(int paymentId, DateTime reminderDate)
         {
-            var delay = reminderDate - DateTime.UtcNow;
+            var delay = reminderDate - DateTime.Now;
             if (delay <= TimeSpan.Zero) return;
 
             Task.Delay(delay).ContinueWith(async _ =>
@@ -178,7 +189,7 @@ namespace HouseRentAPI.Services
             var payment = await GetPaymentAsync(paymentId);
             if (payment.Status == PaymentStatus.Paid) return 0;
 
-            var daysLate = (DateTime.UtcNow - payment.DueDate).Days;
+            var daysLate = (DateTime.Now - payment.DueDate).Days;
             return daysLate > 0 ? daysLate * 500 : 0; // 500 BDT per day late
         }
 

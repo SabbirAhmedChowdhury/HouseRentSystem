@@ -1,8 +1,8 @@
 ﻿using HouseRentAPI.Enums;
+using HouseRentAPI.Exceptions;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
 using Microsoft.AspNetCore.Identity;
-using System.Security.Claims;
 using System.Text.RegularExpressions;
 
 namespace HouseRentAPI.Services
@@ -29,7 +29,8 @@ namespace HouseRentAPI.Services
 
             // Check if email already exists
             if (await userRepo.AnyAsync(u => u.Email == user.Email))
-                throw new InvalidOperationException("Email already registered");
+                //throw new InvalidOperationException("Email already registered");
+                throw new ConflictException("Email address already in use");
 
             if (!IsValidPassword(password))
             {
@@ -39,7 +40,7 @@ namespace HouseRentAPI.Services
 
             // Hash password
             user.PasswordHash = _passwordHasher.HashPassword(user, password);
-            user.CreatedAt = DateTime.UtcNow;
+            user.CreatedAt = DateTime.Now;
 
             await userRepo.AddAsync(user);
             await _unitOfWork.SaveChangesAsync();
