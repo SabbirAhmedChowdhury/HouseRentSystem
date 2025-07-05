@@ -81,7 +81,7 @@ namespace HouseRentSystemAPI.Tests
                 .ReturnsAsync("test_token");
 
             _mapperMock.Setup(m => m.Map<UserProfileDto>(user))
-                .Returns(new UserProfileDto { Id = 1 });
+                .Returns(new UserProfileDto { UserId = 1 });
 
             // Act
             var result = await _controller.Register(registrationDto);
@@ -91,7 +91,7 @@ namespace HouseRentSystemAPI.Tests
             var response = (result as OkObjectResult).Value as AuthResponseDto;
             response.Should().NotBeNull();
             response.Token.Should().Be("test_token");
-            response.UserProfile.Id.Should().Be(1);
+            response.UserProfile.UserId.Should().Be(1);
         }
 
         [Fact]
@@ -140,7 +140,7 @@ namespace HouseRentSystemAPI.Tests
                 .ReturnsAsync("test_token");
 
             _mapperMock.Setup(m => m.Map<UserProfileDto>(user))
-                .Returns(new UserProfileDto { Id = 1 });
+                .Returns(new UserProfileDto { UserId = 1 });
 
             // Act
             var result = await _controller.Login(loginDto);
@@ -149,7 +149,7 @@ namespace HouseRentSystemAPI.Tests
             result.Should().BeOfType<OkObjectResult>();
             var response = (result as OkObjectResult).Value as AuthResponseDto;
             response.Token.Should().Be("test_token");
-            response.UserProfile.Id.Should().Be(1);
+            response.UserProfile.UserId.Should().Be(1);
         }
 
         [Fact]
@@ -184,10 +184,10 @@ namespace HouseRentSystemAPI.Tests
                 Email = "test@example.com",
                 PasswordHash = "hashed_password", // Replace with actual hash logic if needed
                 PhoneNumber = "+8801712345678",
-                Role = UserRole.Tenant, // Assuming UserRole is an enum
+                Role = UserRole.Tenant,
                 NID = "1234567890123"
             };
-            var profileDto = new UserProfileDto { Id = userId };
+            var profileDto = new UserProfileDto { UserId = userId };
 
             _userServiceMock.Setup(s => s.GetUserByIdAsync(userId))
                 .ReturnsAsync(user);
@@ -201,7 +201,7 @@ namespace HouseRentSystemAPI.Tests
             // Assert
             result.Should().BeOfType<OkObjectResult>();
             var response = (result as OkObjectResult).Value as UserProfileDto;
-            response.Id.Should().Be(userId);
+            response.UserId.Should().Be(userId);
         }
 
         [Fact]
@@ -242,7 +242,7 @@ namespace HouseRentSystemAPI.Tests
                 Role = UserRole.Tenant, // Assuming UserRole is an enum
                 NID = "1234567890123"
             };
-            var updatedProfile = new UserProfileDto { Id = userId, FullName = "Updated Name" };
+            var updatedProfile = new UserProfileDto { UserId = userId, FullName = "Updated Name" };
 
             _userServiceMock.Setup(s => s.GetUserByIdAsync(userId))
                 .ReturnsAsync(user);

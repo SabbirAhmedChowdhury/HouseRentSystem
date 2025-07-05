@@ -90,28 +90,28 @@ namespace HouseRentAPI.Services
             );
         }
 
-        public async Task AssignWorkerAsync(int requestId, int workerId)
-        {
-            var requestRepo = _unitOfWork.GetRepository<MaintenanceRequest>();
-            var userRepo = _unitOfWork.GetRepository<User>();
+        //public async Task AssignWorkerAsync(int requestId, int workerId)
+        //{
+        //    var requestRepo = _unitOfWork.GetRepository<MaintenanceRequest>();
+        //    var userRepo = _unitOfWork.GetRepository<User>();
 
-            var request = await requestRepo.GetByIdAsync(requestId);
-            //if (request == null) throw new KeyNotFoundException("Request not found");
-            if (request == null) throw new NotFoundException(nameof(MaintenanceRequest), requestId);
+        //    var request = await requestRepo.GetByIdAsync(requestId);
+        //    //if (request == null) throw new KeyNotFoundException("Request not found");
+        //    if (request == null) throw new NotFoundException(nameof(MaintenanceRequest), requestId);
 
-            var worker = await userRepo.GetByIdAsync(workerId);
-            //if (worker == null) throw new KeyNotFoundException("Worker not found");
-            if (worker == null) throw new NotFoundException(nameof(MaintenanceRequest), requestId);
+        //    var worker = await userRepo.GetByIdAsync(workerId);
+        //    //if (worker == null) throw new KeyNotFoundException("Worker not found");
+        //    if (worker == null) throw new NotFoundException(nameof(MaintenanceRequest), requestId);
 
-            request.AssignedWorkerId = workerId;
-            request.Status = MaintenanceStatus.InProgress;
+        //    request.AssignedWorkerId = workerId;
+        //    request.Status = MaintenanceStatus.InProgress;
 
-            requestRepo.Update(request);
-            await _unitOfWork.SaveChangesAsync();
+        //    requestRepo.Update(request);
+        //    await _unitOfWork.SaveChangesAsync();
 
-            // Notify worker
-            //await NotifyWorkerAsync(requestId, workerId);
-        }
+        //    // Notify worker
+        //    //await NotifyWorkerAsync(requestId, workerId);
+        //}
 
         private async Task NotifyLandlordAsync(MaintenanceRequest request, int landlordId)
         {
@@ -146,21 +146,21 @@ namespace HouseRentAPI.Services
             await _emailService.SendEmailAsync(request.Tenant.Email, subject, body);
         }
 
-        private async Task NotifyWorkerAsync(int requestId, int workerId)
-        {
-            var request = await GetRequestByIdAsync(requestId);
-            var worker = await _unitOfWork.GetRepository<User>().GetByIdAsync(workerId);
+        //private async Task NotifyWorkerAsync(int requestId, int workerId)
+        //{
+        //    var request = await GetRequestByIdAsync(requestId);
+        //    var worker = await _unitOfWork.GetRepository<User>().GetByIdAsync(workerId);
 
-            if (request == null || worker == null) return;
+        //    if (request == null || worker == null) return;
 
-            var subject = $"New Maintenance Assignment (Request #{requestId})";
-            var body = $"Dear {worker.FullName},<br/><br/>" +
-                      $"You have been assigned to a maintenance request at {request.Property.Address}.<br/>" +
-                      $"Description: {request.Description}<br/><br/>" +
-                      "Please contact the tenant to schedule the repair.<br/><br/>" +
-                      "Best regards,<br/>House Rent Management System";
+        //    var subject = $"New Maintenance Assignment (Request #{requestId})";
+        //    var body = $"Dear {worker.FullName},<br/><br/>" +
+        //              $"You have been assigned to a maintenance request at {request.Property.Address}.<br/>" +
+        //              $"Description: {request.Description}<br/><br/>" +
+        //              "Please contact the tenant to schedule the repair.<br/><br/>" +
+        //              "Best regards,<br/>House Rent Management System";
 
-            await _emailService.SendEmailAsync(worker.Email, subject, body);
-        }
+        //    await _emailService.SendEmailAsync(worker.Email, subject, body);
+        //}
     }
 }

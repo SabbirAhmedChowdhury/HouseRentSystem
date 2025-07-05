@@ -10,6 +10,6 @@ namespace HouseRentAPI.Interfaces
         Task<MaintenanceRequest> GetRequestByIdAsync(int id);
         Task<IEnumerable<MaintenanceRequest>> GetRequestsByTenantAsync(int tenantId);
         Task<IEnumerable<MaintenanceRequest>> GetRequestsByPropertyAsync(int propertyId);
-        Task AssignWorkerAsync(int requestId, int workerId);
+        //Task AssignWorkerAsync(int requestId, int workerId);
     }
 }

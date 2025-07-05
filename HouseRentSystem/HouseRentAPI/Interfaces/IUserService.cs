@@ -10,7 +10,7 @@ namespace HouseRentAPI.Interfaces
         Task<User> GetUserByEmailAsync(string email);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
-        Task<bool> VerifyNIDAsync(int userId, string nidNumber);
+        Task<bool> VerifyNIDAsync(int userId);
         Task<IEnumerable<User>> GetLandlordsAsync();
         Task<IEnumerable<User>> GetTenantsAsync();
         Task UpdatePasswordAsync(int userId, string currentPassword, string newPassword);

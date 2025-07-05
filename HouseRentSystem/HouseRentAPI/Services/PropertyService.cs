@@ -26,7 +26,8 @@ namespace HouseRentAPI.Services
 
             var landlord = await userRepo.GetByIdAsync(property.LandlordId);
             if (landlord == null || landlord.Role != UserRole.Landlord)
-                throw new InvalidOperationException("Invalid landlord");
+                //throw new InvalidOperationException("Invalid landlord");
+                throw new BadRequestException("Invalid landlord");
 
             property.CreatedAt = DateTime.Now;
 
@@ -150,7 +151,8 @@ namespace HouseRentAPI.Services
             var imageRepo = _unitOfWork.GetRepository<PropertyImage>();
 
             var property = await propertyRepo.GetByIdAsync(propertyId);
-            if (property == null) throw new KeyNotFoundException("Property not found");
+            //if (property == null) throw new KeyNotFoundException("Property not found");
+            if (property == null) throw new NotFoundException(nameof(Property), propertyId);
 
             foreach (var image in images)
             {
@@ -170,7 +172,8 @@ namespace HouseRentAPI.Services
             var propertyRepo = _unitOfWork.GetRepository<Property>();
             var property = await propertyRepo.GetByIdAsync(propertyId);
 
-            if (property == null) throw new KeyNotFoundException("Property not found");
+            //if (property == null) throw new KeyNotFoundException("Property not found");
+            if (property == null) throw new NotFoundException(nameof(Property), propertyId);
 
             property.IsAvailable = !property.IsAvailable;
             propertyRepo.Update(property);
@@ -181,6 +184,9 @@ namespace HouseRentAPI.Services
         {
             var property = await _unitOfWork.GetRepository<Property>()
                 .FirstOrDefaultAsync(p => p.PropertyId == propertyId);
+
+            //if (property == null) throw new KeyNotFoundException("Property not found");
+            if (property == null) throw new NotFoundException(nameof(Property), propertyId);
 
             return property?.LandlordId == userId;
         }

@@ -70,20 +70,20 @@ namespace HouseRentSystemAPI.Tests
             _mockService.Verify(s => s.UploadPaymentSlipAsync(1, fileMock.Object), Times.Once);
         }
 
-        [Fact]
-        public async Task CalculateLateFee_ValidId_ReturnsLateFee()
-        {
-            // Arrange
-            _mockService.Setup(s => s.CalculateLateFeeAsync(1)).ReturnsAsync(1500);
+        //[Fact]
+        //public async Task CalculateLateFee_ValidId_ReturnsLateFee()
+        //{
+        //    // Arrange
+        //    _mockService.Setup(s => s.CalculateLateFeeAsync(1)).ReturnsAsync(1500);
 
-            // Act
-            var result = await _controller.CalculateLateFee(1);
+        //    // Act
+        //    var result = await _controller.CalculateLateFee(1);
 
-            // Assert
-            var okResult = Assert.IsType<OkObjectResult>(result.Result);
-            var response = Assert.IsType<LateFeeResponseDTO>(okResult.Value);
-            Assert.Equal(1500, response.LateFee);
-        }
+        //    // Assert
+        //    var okResult = Assert.IsType<OkObjectResult>(result.Result);
+        //    var response = Assert.IsType<LateFeeResponseDTO>(okResult.Value);
+        //    Assert.Equal(1500, response.LateFee);
+        //}
 
         // Additional tests for:
         // - Model validation errors

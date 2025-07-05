@@ -1,10 +1,34 @@
 @rootURL = http://localhost:5286
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiI5IiwiZW1haWwiOiJzYWJiaXIwMTNAb3V0bG9vay5jb20iLCJyb2xlIjoiTGFuZGxvcmQiLCJuYmYiOjE3NTE2OTQ3NzEsImV4cCI6MTc1MTcwNTU3MSwiaWF0IjoxNzUxNjk0NzcxLCJpc3MiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20iLCJhdWQiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20ifQ.t4QQdbztOjqPDyxTM3uWo5A8FTCXh2j-VbBwwRgLZXQ
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwiZW1haWwiOiJzYWJiaXIwMTNAb3V0bG9vay5jb20iLCJyb2xlIjoiTGFuZGxvcmQiLCJuYmYiOjE3NTE3Mjg4NTUsImV4cCI6MTc1MTczOTY1NSwiaWF0IjoxNzUxNzI4ODU1LCJpc3MiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20iLCJhdWQiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20ifQ.bxLD3bGr4BbwO4WLZvkwYp-KD2WcpAo_G45mY3R1Kyo
+@token_Admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzIiwiZW1haWwiOiJzYWJiaXIwMTRAb3V0bG9vay5jb20iLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE3NTE3MTg0NTIsImV4cCI6MTc1MTcyOTI1MiwiaWF0IjoxNzUxNzE4NDUyLCJpc3MiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20iLCJhdWQiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20ifQ.UwTXVckE3xh-gavz7MTZ9vR1klMeUWJMSokisG7oAnM
+@token_Tenant = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwiZW1haWwiOiJzYWJiaXIwMTRAZ21haWwuY29tIiwicm9sZSI6IlRlbmFudCIsIm5iZiI6MTc1MTcxNzI0MiwiZXhwIjoxNzUxNzI4MDQyLCJpYXQiOjE3NTE3MTcyNDIsImlzcyI6Imh0dHBzOi8vaG91c2VyZW50c3lzdGVtLmNvbSIsImF1ZCI6Imh0dHBzOi8vaG91c2VyZW50c3lzdGVtLmNvbSJ9.4agA6pEkZNel-Gt_wNdmhmwvTpnS8BCLgaBb0Uv5n_M
 
 GET {{rootURL}}/weatherforecast/
 Accept: application/json
 
 //start user
+###
+POST {{rootURL}}/api/user/register
+Content-Type: application/json
+{
+  "fullName": "Admin",
+  "email": "sabbir014@outlook.com",
+  "password": "P@ssw0rd123",
+  "phoneNumber": "+8801738034915",
+  "nid": "123456987123",
+  "role": "Admin"
+}
+###
+POST {{rootURL}}/api/user/register
+Content-Type: application/json
+{
+  "fullName": "Sabbir Chowdhury",
+  "email": "sabbir013@outlook.com",
+  "password": "P@ssw0rd123",
+  "phoneNumber": "+8801738034915",
+  "nid": "12345678901236",
+  "role": "Landlord"
+}
 ###
 POST {{rootURL}}/api/user/register
 Content-Type: application/json
@@ -17,31 +41,20 @@ Content-Type: application/json
   "role": "Tenant"
 }
 
-###
-POST {{rootURL}}/api/user/register
-Content-Type: application/json
-{
-  "fullName": "Sabbir Chowdhury",
-  "email": "sabbir013@outlook.com",
-  "password": "P@ssw0rd123",
-  "phoneNumber": "+8801738034915",
-  "nid": "12345678901236",
-  "role": "Landlord"
-}
 
 ###
 POST {{rootURL}}/api/user/login
 Content-Type: application/json
 {
   "email": "sabbir014@gmail.com",
-  "password": "P@ssw0rd1234"
+  "password": "P@ssw0rd123"
 }
 
 ###
 POST {{rootURL}}/api/user/login
 Content-Type: application/json
 {
-  "email": "sabbirahmedchowdhury013@gmail.com",
+  "email": "sabbir013@outlook.com",
   "password": "P@ssw0rd123"
 }
 
@@ -51,17 +64,26 @@ Authorization: Bearer {{token}}
 Accept: application/json
 
 ###
+GET {{rootURL}}/api/user/profile
+Authorization: Bearer {{token_Tenant}}
+Accept: application/json
+
+
+###
 PUT {{rootURL}}/api/user/profile
 Authorization: Bearer {{token}}
 Content-Type: application/json
 {
   "fullName": "Sabbir Ahmed Chowdhury",
   "phoneNumber": "+8801738034915",
-  "currentPassword": "P@ssw0rd1234",
-  "newPassword": "P@ssw0rd1234",
-  "isNIDVerified": true
+  "currentPassword": "P@ssw0rd12",
+  "newPassword": "P@ssw0rd1234"
 }
 
+###
+PUT {{rootURL}}/api/user/verify-nid/2
+Authorization: Bearer {{token_Admin}}
+Content-Type: application/json
 ###
 
 //end user
@@ -72,11 +94,11 @@ POST {{rootURL}}/api/property
 Authorization: Bearer {{token}}
 Content-Type: application/json
 {
-  "address": "120/b, Notun Rasta, Maniknagar, Mugda",
+  "address": "121/b, Notun Rasta, Maniknagar, Mugda",
   "city": "Dhaka",
   "rentAmount": 25000,
-  "bedrooms": 3,
-  "bathrooms": 3
+  "bedrooms": 2,
+  "bathrooms": 2
 }
 ###
 GET {{rootURL}}/api/property
@@ -91,10 +113,10 @@ Content-Type: application/json
 {
   "address": "Rankin Street",
   "city": "Dhaka",
-  "rentAmount": 28000,
+  "rentAmount": 20000,
   "securityDeposit": 30000,
-  "bedrooms": 4,
-  "bathrooms": 3,
+  "bedrooms": 2,
+  "bathrooms": 2,
   "amenities": "no amenities",
   "description": "ha ha",
   "isAvailable": true
@@ -103,8 +125,8 @@ Content-Type: application/json
 Delete {{rootURL}}/api/property/4
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/property/search?city=Dhaka&minRent=10000&maxRent=20000&page=1&pageSize=5
-Authorization: Bearer {{token}}
+GET {{rootURL}}/api/property/search?city=Dhaka&minRent=10000&maxRent=40000&page=1&pageSize=5
+Authorization: Bearer {{token_Tenant}}
 ###
 POST {{rootURL}}/api/property/1/images
 Authorization: Bearer {{token}}
@@ -115,42 +137,42 @@ Content-Type: multipart/form-data
 //start lease
 ###
 POST {{rootURL}}/api/Lease
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_Tenant}}
 Content-Type: application/json
 {
   "startDate": "2025-07-04T16:44:38.485Z",
   "endDate": "2026-07-04T16:44:38.485Z",
-  "monthlyRent": 15000,
+  "monthlyRent": 20000,
   "termsAndConditions": "abc",
-  "propertyId": 6,
-  "tenantId": 3
+  "propertyId": 2,
+  "tenantId": 2
 }
 ###
-GET {{rootURL}}/api/Lease/2
+GET {{rootURL}}/api/Lease/1
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/Lease/tenant/3
+GET {{rootURL}}/api/Lease/tenant/2
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/lease/property/1
+GET {{rootURL}}/api/lease/property/2
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/Lease/2/document
+GET {{rootURL}}/api/Lease/1/document
 Authorization: Bearer {{token}}
 ###
 //end lease
 
 //start maintenance
 POST {{rootURL}}/api/maintenance
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_Tenant}}
 Content-Type: application/json
 {
   "description": "fix window2",
-  "propertyId": 6,
-  "tenantId": 3
+  "propertyId": 2,
+  "tenantId": 2
 }
 ###
-PUT {{rootURL}}/api/maintenance/2/status
+PUT {{rootURL}}/api/maintenance/1/status
 Authorization: Bearer {{token}}
 Content-Type: application/json
 {
@@ -164,39 +186,39 @@ Content-Type: application/json
   "workerId": 1
 }
 ###
-GET {{rootURL}}/api/maintenance/2
+GET {{rootURL}}/api/maintenance/1
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/maintenance/tenant/3
+GET {{rootURL}}/api/maintenance/tenant/2
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/maintenance/property/1
+GET {{rootURL}}/api/maintenance/property/2
 Authorization: Bearer {{token}}
 ###
 //end maintenance
 
 //start payment
 POST {{rootURL}}/api/payments
-Authorization: Bearer {{token}}
+Authorization: Bearer {{token_Tenant}}
 Content-Type: application/json
 {
   "leaseId": 1,
   "amount": 15000,
-  "dueDate": "2025-07-05T23:40:19.947Z"
+  "dueDate": "2025-07-06T23:40:19.947Z"
 }
 ###
-PUT {{rootURL}}/api/payments/2/status
+PUT {{rootURL}}/api/payments/3/status
 Authorization: Bearer {{token}}
 Content-Type: application/json
 {
   "status": 0
 }
 ###
-POST {{rootURL}}/api/payments/1/verify
+POST {{rootURL}}/api/payments/2/verify
 Authorization: Bearer {{token}}
 Content-Type: application/json
 ###
-GET {{rootURL}}/api/payments/1
+GET {{rootURL}}/api/payments/3
 Authorization: Bearer {{token}}
 ###
 GET {{rootURL}}/api/payments/lease/1
@@ -205,13 +227,13 @@ Authorization: Bearer {{token}}
 GET {{rootURL}}/api/payments/overdue
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/payments/tenant/3/history
+GET {{rootURL}}/api/payments/tenant/2/history
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/payments/1/late-fee
+GET {{rootURL}}/api/payments/2/late-fee
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/payments/due/"2025-07-05T23:40:19.947Z"
+GET {{rootURL}}/api/payments/due/2025-07-05T23:40:19.947Z
 Authorization: Bearer {{token}}
 ###
 POST {{rootURL}}/api/payments/1/slip

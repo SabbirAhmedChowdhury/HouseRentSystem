@@ -39,14 +39,14 @@ namespace HouseRentAPI.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}/assign")]
-        public async Task<IActionResult> AssignWorker(
-            int id,
-            [FromBody] AssignWorkerDTO assignDto)
-        {
-            await _maintenanceService.AssignWorkerAsync(id, assignDto.WorkerId);
-            return NoContent();
-        }
+        //[HttpPut("{id}/assign")]
+        //public async Task<IActionResult> AssignWorker(
+        //    int id,
+        //    [FromBody] AssignWorkerDTO assignDto)
+        //{
+        //    await _maintenanceService.AssignWorkerAsync(id, assignDto.WorkerId);
+        //    return NoContent();
+        //}
 
         [HttpGet("{id}")]
         public async Task<ActionResult<MaintenanceResponseDTO>> GetRequestById(int id)

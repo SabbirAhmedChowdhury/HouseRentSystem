@@ -1,4 +1,5 @@
-﻿using HouseRentAPI.Interfaces;
+﻿using HouseRentAPI.Exceptions;
+using HouseRentAPI.Interfaces;
 
 namespace HouseRentAPI.Services
 {
@@ -88,7 +89,8 @@ namespace HouseRentAPI.Services
             // Check file size
             var maxSize = _configuration.GetValue<long>("FileStorage:MaxFileSizeMB") * 1024 * 1024;
             if (file.Length > maxSize)
-                throw new InvalidOperationException($"File size exceeds {_configuration["FileStorage:MaxFileSizeMB"]}MB limit");
+                //throw new InvalidOperationException($"File size exceeds {_configuration["FileStorage:MaxFileSizeMB"]}MB limit");
+                throw new BadRequestException($"File size exceeds {_configuration["FileStorage:MaxFileSizeMB"]}MB limit");
 
             // Check file extension
             var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
@@ -100,7 +102,8 @@ namespace HouseRentAPI.Services
             };
 
             if (allowedTypes == null || !allowedTypes.Contains(extension))
-                throw new InvalidOperationException($"Invalid file type. Allowed types: {string.Join(", ", allowedTypes)}");
+                //throw new InvalidOperationException($"Invalid file type. Allowed types: {string.Join(", ", allowedTypes)}");
+                throw new BadRequestException($"Invalid file type. Allowed types: {string.Join(", ", allowedTypes)}");
         }
 
         public async Task<string> SaveImageAsync(IFormFile imageFile)

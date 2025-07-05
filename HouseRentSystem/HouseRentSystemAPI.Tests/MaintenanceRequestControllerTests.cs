@@ -51,19 +51,19 @@ namespace HouseRentSystemAPI.Tests
             Assert.Equal(1, ((MaintenanceResponseDTO)createdAtResult.Value).RequestId);
         }
 
-        [Fact]
-        public async Task AssignWorker_ValidInput_ReturnsNoContent()
-        {
-            // Arrange
-            var assignDto = new AssignWorkerDTO { WorkerId = 3 };
+        //[Fact]
+        //public async Task AssignWorker_ValidInput_ReturnsNoContent()
+        //{
+        //    // Arrange
+        //    var assignDto = new AssignWorkerDTO { WorkerId = 3 };
 
-            // Act
-            var result = await _controller.AssignWorker(1, assignDto);
+        //    // Act
+        //    var result = await _controller.AssignWorker(1, assignDto);
 
-            // Assert
-            Assert.IsType<NoContentResult>(result);
-            _mockService.Verify(s => s.AssignWorkerAsync(1, 3), Times.Once);
-        }
+        //    // Assert
+        //    Assert.IsType<NoContentResult>(result);
+        //    _mockService.Verify(s => s.AssignWorkerAsync(1, 3), Times.Once);
+        //}
 
         // Additional tests for:
         // - 404 responses

@@ -31,7 +31,8 @@ namespace HouseRentAPI.Services
             var leaseRepo = _unitOfWork.GetRepository<Lease>();
 
             var lease = await leaseRepo.GetByIdAsync(leaseId);
-            if (lease == null) throw new KeyNotFoundException("Lease not found");
+            //if (lease == null) throw new KeyNotFoundException("Lease not found");
+            if (lease == null) throw new NotFoundException(nameof(Lease), leaseId);
 
             var payment = new RentPayment
             {
@@ -89,7 +90,8 @@ namespace HouseRentAPI.Services
             var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
             var payment = await paymentRepo.GetByIdAsync(paymentId);
 
-            if (payment == null) throw new KeyNotFoundException("Payment record not found");
+            //if (payment == null) throw new KeyNotFoundException("Payment record not found");
+            if (payment == null) throw new NotFoundException(nameof(RentPayment), paymentId);
 
             var slipPath = await _fileStorageService.SaveDocumentAsync(slipFile);
             payment.PaymentSlipPath = slipPath;
@@ -176,22 +178,24 @@ namespace HouseRentAPI.Services
             var payment = await GetPaymentAsync(paymentId);
 
             if (payment.Status != PaymentStatus.Paid)
-                throw new InvalidOperationException("Payment not completed");
+                //throw new InvalidOperationException("Payment not completed");
+                throw new BadRequestException("Payment not completed");
 
             if (string.IsNullOrEmpty(payment.PaymentSlipPath))
-                throw new InvalidOperationException("Payment slip not uploaded");
+                //throw new InvalidOperationException("Payment slip not uploaded");
+                throw new BadRequestException("Payment not completed");
 
             // Additional verification logic
         }
 
-        public async Task<decimal> CalculateLateFeeAsync(int paymentId)
-        {
-            var payment = await GetPaymentAsync(paymentId);
-            if (payment.Status == PaymentStatus.Paid) return 0;
+        //public async Task<decimal> CalculateLateFeeAsync(int paymentId)
+        //{
+        //    var payment = await GetPaymentAsync(paymentId);
+        //    if (payment.Status == PaymentStatus.Paid) return 0;
 
-            var daysLate = (DateTime.Now - payment.DueDate).Days;
-            return daysLate > 0 ? daysLate * 500 : 0; // 500 BDT per day late
-        }
+        //    var daysLate = (DateTime.Now - payment.DueDate).Days;
+        //    return daysLate > 0 ? daysLate * 500 : 0; // 500 BDT per day late
+        //}
 
         public async Task<IEnumerable<RentPayment>> GetPaymentHistoryAsync(int tenantId)
         {
@@ -221,7 +225,8 @@ namespace HouseRentAPI.Services
             );
 
             if (payment == null)
-                throw new KeyNotFoundException($"Payment with ID {paymentId} not found");
+                //throw new KeyNotFoundException($"Payment with ID {paymentId} not found");
+                throw new NotFoundException(nameof(RentPayment), paymentId);
 
             return payment;
         }

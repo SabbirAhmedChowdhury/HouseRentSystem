@@ -141,12 +141,12 @@ namespace HouseRentAPI.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPost("verify-nid/{userId}")]
-        public async Task<IActionResult> VerifyNID(int userId, [FromBody] string nidNumber)
+        [HttpPut("verify-nid/{userId}")]
+        public async Task<IActionResult> VerifyNID(int userId)
         {
             try
             {
-                var isVerified = await _userService.VerifyNIDAsync(userId, nidNumber);
+                var isVerified = await _userService.VerifyNIDAsync(userId);
                 return Ok(new { isVerified });
             }
             catch (KeyNotFoundException ex)

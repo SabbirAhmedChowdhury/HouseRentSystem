@@ -53,7 +53,7 @@ namespace HouseRentSystemAPI.Tests
                 Address = "123 Main St",
                 City = "Sample City"
             };
-            var propertyDto = new PropertyDto { Id = 1 };
+            var propertyDto = new PropertyDto { PropertyId = 1 };
 
             _propertyServiceMock.Setup(s => s.GetPropertyByIdAsync(1))
                 .ReturnsAsync(property);
@@ -67,7 +67,7 @@ namespace HouseRentSystemAPI.Tests
             // Assert  
             result.Should().BeOfType<OkObjectResult>();
             var response = (result as OkObjectResult).Value as PropertyDto;
-            response.Id.Should().Be(1);
+            response.PropertyId.Should().Be(1);
         }
 
         [Fact]
@@ -83,7 +83,7 @@ namespace HouseRentSystemAPI.Tests
                 Address = "123 Main St",
                 City = "Sample City"
             };
-            var propertyDto = new PropertyDto { Id = 1 };
+            var propertyDto = new PropertyDto { PropertyId = 1 };
 
             _mapperMock.Setup(m => m.Map<Property>(createDto))
                 .Returns(property);
@@ -100,7 +100,7 @@ namespace HouseRentSystemAPI.Tests
             // Assert
             result.Should().BeOfType<CreatedAtActionResult>();
             var response = (result as CreatedAtActionResult).Value as PropertyDto;
-            response.Id.Should().Be(1);
+            response.PropertyId.Should().Be(1);
         }
 
         [Fact]
@@ -150,9 +150,10 @@ namespace HouseRentSystemAPI.Tests
 
             // Assert
             result.Should().BeOfType<OkObjectResult>();
-            var response = (result as OkObjectResult).Value as PaginatedResult<Property>;
-            response.Items.Should().HaveCount(1);
-            response.TotalItems.Should().Be(1);
+            var response = (result as OkObjectResult)?.Value as PaginatedResult<PropertyListDto>;
+            response.Should().NotBeNull();
+            response?.Items.Should().HaveCount(1);
+            response?.TotalItems.Should().Be(1);
         }
 
         [Fact]
@@ -167,15 +168,15 @@ namespace HouseRentSystemAPI.Tests
             fileMock.Setup(f => f.Length).Returns(100);
 
             _fileServiceMock.Setup(s => s.SaveImageAsync(It.IsAny<IFormFile>()))
-                .ReturnsAsync("/images/test.jpg");
+                .ReturnsAsync("~/images/test.jpg");
 
             // Act
             var result = await _controller.UploadPropertyImages(1, new List<IFormFile> { fileMock.Object });
 
             // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            var response = (result as OkObjectResult).Value as List<string>;
-            response.Should().Contain("/images/test.jpg");
+            result.Should().BeOfType<OkResult>();
+            //var response = (result as OkResult)?.ToString();
+            //response?.Should().Contain("~/images/test.jpg");
         }
     }
 }

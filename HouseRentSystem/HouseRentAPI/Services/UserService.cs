@@ -32,9 +32,16 @@ namespace HouseRentAPI.Services
                 //throw new InvalidOperationException("Email already registered");
                 throw new ConflictException("Email address already in use");
 
+            // Check if nid already exists
+            if (await userRepo.AnyAsync(u => u.NID == user.NID))
+                throw new ConflictException("Duplicate national id");
+
             if (!IsValidPassword(password))
             {
-                throw new InvalidOperationException(
+                //throw new InvalidOperationException(
+                //    "Password must be at least 8 characters with uppercase, lowercase, number, and special character");
+
+                throw new BadRequestException(
                     "Password must be at least 8 characters with uppercase, lowercase, number, and special character");
             }
 
@@ -88,22 +95,24 @@ namespace HouseRentAPI.Services
             var userRepo = _unitOfWork.GetRepository<User>();
             var user = await userRepo.GetByIdAsync(id);
 
-            if (user == null) throw new KeyNotFoundException("User not found");
+            //if (user == null) throw new KeyNotFoundException("User not found");
+            if (user == null) throw new NotFoundException(nameof(User), id);
 
             userRepo.Remove(user);
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<bool> VerifyNIDAsync(int userId, string nidNumber)
+        public async Task<bool> VerifyNIDAsync(int userId)
         {
             // In a real system, this would call a government verification API
             var userRepo = _unitOfWork.GetRepository<User>();
             var user = await userRepo.GetByIdAsync(userId);
 
-            if (user == null) throw new KeyNotFoundException("User not found");
+            //if (user == null) throw new KeyNotFoundException("User not found");
+            if (user == null) throw new NotFoundException(nameof(User), userId);
 
             // Simple mock verification
-            bool isVerified = nidNumber.Length == 10 || nidNumber.Length == 17;
+            bool isVerified = user.NID.Length == 10 || user.NID.Length == 17;
 
             if (isVerified)
             {
@@ -134,7 +143,8 @@ namespace HouseRentAPI.Services
             if (_passwordHasher.VerifyHashedPassword(user, user.PasswordHash, currentPassword)
                 != PasswordVerificationResult.Success)
             {
-                throw new InvalidOperationException("Current password is incorrect");
+                //throw new InvalidOperationException("Current password is incorrect");
+                throw new BadRequestException("Current password is incorrect");
             }
 
             user.PasswordHash = _passwordHasher.HashPassword(user, newPassword);

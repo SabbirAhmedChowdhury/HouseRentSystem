@@ -20,15 +20,11 @@ namespace HouseRentAPI.Profiles
                 .ForMember(dest => dest.Images,
                     opt => opt.MapFrom(src => src.Images.Select(i => i.ImagePath).ToList()))
                 .ForMember(dest => dest.LandlordName,
-                    opt => opt.MapFrom(src => src.Landlord.FullName))
-                .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom(src => src.PropertyId));
+                    opt => opt.MapFrom(src => src.Landlord.FullName));
 
             CreateMap<Property, PropertyListDto>()
                 .ForMember(dest => dest.Thumbnail,
-                    opt => opt.MapFrom(src => src.Images.FirstOrDefault().ImagePath))
-                .ForMember(dest => dest.Id,
-                    opt => opt.MapFrom(src => src.PropertyId));
+                    opt => opt.MapFrom(src => src.Images.FirstOrDefault().ImagePath));
         }
     }
 }

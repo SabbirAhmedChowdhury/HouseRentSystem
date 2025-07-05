@@ -34,7 +34,7 @@ namespace HouseRentAPI.DTOs
 
     public class PropertyDto
     {
-        public int Id { get; set; }
+        public int PropertyId { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
         public decimal RentAmount { get; set; }
@@ -52,7 +52,7 @@ namespace HouseRentAPI.DTOs
 
     public class PropertyListDto
     {
-        public int Id { get; set; }
+        public int PropertyId { get; set; }
         public string Address { get; set; }
         public string City { get; set; }
         public decimal RentAmount { get; set; }

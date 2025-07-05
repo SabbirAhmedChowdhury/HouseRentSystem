@@ -36,6 +36,7 @@ namespace HouseRentAPI.Controllers
         }
 
         [HttpPut("{id}/status")]
+        [Authorize(Roles = "Admin,Landlord")]
         public async Task<IActionResult> UpdatePaymentStatus(
             int id,
             [FromBody] UpdatePaymentStatusDTO statusDto)
@@ -85,15 +86,15 @@ namespace HouseRentAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<PaymentHistoryResponseDTO>>(payments));
         }
 
-        [HttpGet("{id}/late-fee")]
-        public async Task<ActionResult<LateFeeResponseDTO>> CalculateLateFee(int id)
-        {
-            var lateFee = await _paymentService.CalculateLateFeeAsync(id);
-            return Ok(new LateFeeResponseDTO { PaymentId = id, LateFee = lateFee });
-        }
+        //[HttpGet("{id}/late-fee")]
+        //public async Task<ActionResult<LateFeeResponseDTO>> CalculateLateFee(int id)
+        //{
+        //    var lateFee = await _paymentService.CalculateLateFeeAsync(id);
+        //    return Ok(new LateFeeResponseDTO { PaymentId = id, LateFee = lateFee });
+        //}
 
         [HttpPost("{id}/verify")]
-        [Authorize(Roles = "Admin,Landlord")]
+        //[Authorize(Roles = "Admin,Landlord")]
         public async Task<IActionResult> VerifyPayment(int id)
         {
             await _paymentService.VerifyPaymentAsync(id);

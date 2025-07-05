@@ -22,6 +22,8 @@ namespace HouseRentAPI.Profiles
             CreateMap<Lease, LeaseBasicDTO>();
             CreateMap<Property, PropertyBasicDTO>();
             CreateMap<User, UserBasicDTO>();
+            CreateMap<RentPayment, PaymentHistoryResponseDTO>()
+            .ForMember(dest => dest.PropertyAddress, opt => opt.MapFrom(src => src.Lease.Property.Address));
 
             // Update DTO to Entity
             CreateMap<UpdatePaymentStatusDTO, RentPayment>()
@@ -34,7 +36,7 @@ namespace HouseRentAPI.Profiles
                 .ForMember(dest => dest.PaymentSlipPath, opt => opt.Ignore())
                 .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
                 .ForMember(dest => dest.LeaseId, opt => opt.Ignore())
-                .ForMember(dest => dest.Lease, opt => opt.Ignore());
+                .ForMember(dest => dest.Lease, opt => opt.Ignore());            
         }
     }
 }
