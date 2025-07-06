@@ -105,6 +105,16 @@ builder.Services.AddRateLimiter(options =>
             }));
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:56127", "http://localhost:3000") // Add React ports
+              .AllowAnyHeader()
+              .AllowAnyMethod();
+    });
+});
+
 
 var app = builder.Build();
 
@@ -134,6 +144,8 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 // Middleware order is critical!
 app.UseRouting();
+
+app.UseCors("AllowReactApp");
 
 // Add authentication middleware BEFORE authorization
 app.UseAuthentication();

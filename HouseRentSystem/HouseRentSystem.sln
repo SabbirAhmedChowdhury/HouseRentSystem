@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseRentAPI", "HouseRentAP
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HouseRentSystemAPI.Tests", "HouseRentSystemAPI.Tests\HouseRentSystemAPI.Tests.csproj", "{1A93F4CE-CD3E-403F-A117-EFEE0C075B33}"
 EndProject
+Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "houserentsystem.ui", "HouseRentSystem.UI\houserentsystem.ui.esproj", "{8F939173-8956-E616-60A4-45C1F82B7109}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,12 @@ Global
 		{1A93F4CE-CD3E-403F-A117-EFEE0C075B33}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1A93F4CE-CD3E-403F-A117-EFEE0C075B33}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1A93F4CE-CD3E-403F-A117-EFEE0C075B33}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F939173-8956-E616-60A4-45C1F82B7109}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F939173-8956-E616-60A4-45C1F82B7109}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F939173-8956-E616-60A4-45C1F82B7109}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{8F939173-8956-E616-60A4-45C1F82B7109}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F939173-8956-E616-60A4-45C1F82B7109}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F939173-8956-E616-60A4-45C1F82B7109}.Release|Any CPU.Deploy.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
