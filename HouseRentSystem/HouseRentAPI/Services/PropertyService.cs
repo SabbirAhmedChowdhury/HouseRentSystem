@@ -86,6 +86,7 @@ namespace HouseRentAPI.Services
     string city,
     decimal? minRent,
     decimal? maxRent,
+    int? bedRooms = 2,
     int page = 1,
     int pageSize = 10,
     string sortBy = "Rent",
@@ -111,6 +112,11 @@ namespace HouseRentAPI.Services
             if (maxRent.HasValue)
             {
                 query = query.Where(p => p.RentAmount <= maxRent.Value);
+            }
+
+            if (bedRooms.HasValue)
+            {
+                query = query.Where(p => p.Bedrooms == bedRooms.Value);
             }
 
             // Apply sorting

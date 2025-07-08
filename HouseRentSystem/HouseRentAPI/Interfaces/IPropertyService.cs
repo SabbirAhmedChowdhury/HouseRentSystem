@@ -13,7 +13,7 @@ namespace HouseRentAPI.Interfaces
         Task DeletePropertyAsync(int id);
         Task<Property> GetPropertyByIdAsync(int id);
         Task<IEnumerable<Property>> GetPropertiesByLandlordAsync(int landlordId);
-        Task<PaginatedResult<Property>> SearchPropertiesAsync(string city, decimal? minRent, decimal? maxRent, int page,int pageSize,string sortBy, string sortDirection);
+        Task<PaginatedResult<Property>> SearchPropertiesAsync(string city, decimal? minRent, decimal? maxRent, int? bedRooms, int page,int pageSize,string sortBy, string sortDirection);
         Task AddPropertyImagesAsync(int propertyId, IEnumerable<IFormFile> images);
         Task TogglePropertyAvailabilityAsync(int propertyId);
         

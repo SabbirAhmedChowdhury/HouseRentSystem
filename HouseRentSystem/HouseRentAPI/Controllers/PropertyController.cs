@@ -34,6 +34,14 @@ namespace HouseRentAPI.Controllers
             return Ok(_mapper.Map<IEnumerable<PropertyListDto>>(properties));
         }
 
+        [Authorize(Roles = "Landlord")]
+        [HttpGet("landlord/{landlordId}")]
+        public async Task<IActionResult> GetAllProperties(int landlordId)
+        {
+            var properties = await _propertyService.GetPropertiesByLandlordAsync(landlordId);
+            return Ok(_mapper.Map<IEnumerable<PropertyListDto>>(properties));
+        }
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetPropertyById(int id)
         {
@@ -102,6 +110,7 @@ namespace HouseRentAPI.Controllers
                 searchDto.City,
                 searchDto.MinRent,
                 searchDto.MaxRent,
+                searchDto.Bedrooms,
                 searchDto.Page,
                 searchDto.PageSize,
                 searchDto.SortBy,

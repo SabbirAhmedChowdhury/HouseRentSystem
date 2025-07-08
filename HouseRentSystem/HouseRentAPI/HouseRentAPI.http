@@ -1,5 +1,5 @@
 @rootURL = http://localhost:5286
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwiZW1haWwiOiJzYWJiaXIwMTNAb3V0bG9vay5jb20iLCJyb2xlIjoiTGFuZGxvcmQiLCJuYmYiOjE3NTE3Mjg4NTUsImV4cCI6MTc1MTczOTY1NSwiaWF0IjoxNzUxNzI4ODU1LCJpc3MiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20iLCJhdWQiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20ifQ.bxLD3bGr4BbwO4WLZvkwYp-KD2WcpAo_G45mY3R1Kyo
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIxIiwiZW1haWwiOiJzYWJiaXIwMTNAb3V0bG9vay5jb20iLCJyb2xlIjoiTGFuZGxvcmQiLCJuYmYiOjE3NTE4MTIwNDcsImV4cCI6MTc1MTgyMjg0NywiaWF0IjoxNzUxODEyMDQ3LCJpc3MiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20iLCJhdWQiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20ifQ.i9Wlcw7DkohRhAy591FRWZ8TVSNGon03NtDeEVRKEkw
 @token_Admin = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIzIiwiZW1haWwiOiJzYWJiaXIwMTRAb3V0bG9vay5jb20iLCJyb2xlIjoiQWRtaW4iLCJuYmYiOjE3NTE3MTg0NTIsImV4cCI6MTc1MTcyOTI1MiwiaWF0IjoxNzUxNzE4NDUyLCJpc3MiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20iLCJhdWQiOiJodHRwczovL2hvdXNlcmVudHN5c3RlbS5jb20ifQ.UwTXVckE3xh-gavz7MTZ9vR1klMeUWJMSokisG7oAnM
 @token_Tenant = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiIyIiwiZW1haWwiOiJzYWJiaXIwMTRAZ21haWwuY29tIiwicm9sZSI6IlRlbmFudCIsIm5iZiI6MTc1MTcxNzI0MiwiZXhwIjoxNzUxNzI4MDQyLCJpYXQiOjE3NTE3MTcyNDIsImlzcyI6Imh0dHBzOi8vaG91c2VyZW50c3lzdGVtLmNvbSIsImF1ZCI6Imh0dHBzOi8vaG91c2VyZW50c3lzdGVtLmNvbSJ9.4agA6pEkZNel-Gt_wNdmhmwvTpnS8BCLgaBb0Uv5n_M
 
@@ -106,6 +106,10 @@ Authorization: Bearer {{token}}
 ###
 GET {{rootURL}}/api/property/2
 Authorization: Bearer {{token}}
+
+###
+GET {{rootURL}}/api/property/landlord/1
+Authorization: Bearer {{token}}
 ###
 PUT {{rootURL}}/api/property/2
 Authorization: Bearer {{token}}
@@ -125,7 +129,7 @@ Content-Type: application/json
 Delete {{rootURL}}/api/property/4
 Authorization: Bearer {{token}}
 ###
-GET {{rootURL}}/api/property/search?city=Dhaka&minRent=10000&maxRent=40000&page=1&pageSize=5
+GET {{rootURL}}/api/property/search?city=&minRent=10000&maxRent=40000&page=1&pageSize=5
 Authorization: Bearer {{token_Tenant}}
 ###
 POST {{rootURL}}/api/property/1/images
