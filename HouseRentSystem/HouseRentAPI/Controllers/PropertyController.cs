@@ -52,7 +52,7 @@ namespace HouseRentAPI.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Landlord,Admin")]
+        [Authorize(Roles = "Landlord")]
         public async Task<IActionResult> CreateProperty([FromBody] CreatePropertyDto createDto)
         {
             var property = _mapper.Map<Property>(createDto);
