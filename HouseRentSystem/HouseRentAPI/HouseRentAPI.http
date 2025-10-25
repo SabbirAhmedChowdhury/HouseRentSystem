@@ -7,13 +7,15 @@ GET {{rootURL}}/weatherforecast/
 Accept: application/json
 
 //start user
+
+// "password": "P@ssw0rd123",
 ###
 POST {{rootURL}}/api/user/register
 Content-Type: application/json
 {
   "fullName": "Admin",
   "email": "sabbir014@outlook.com",
-  "password": "P@ssw0rd123",
+  "password": "Asdf@1234",
   "phoneNumber": "+8801738034915",
   "nid": "123456987123",
   "role": "Admin"

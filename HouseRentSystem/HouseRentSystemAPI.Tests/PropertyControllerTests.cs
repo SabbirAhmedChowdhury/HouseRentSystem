@@ -138,9 +138,9 @@ namespace HouseRentSystemAPI.Tests
                 10         // pageSize                
             );
 
-            _propertyServiceMock.Setup(s => s.SearchPropertiesAsync(
-                It.IsAny<string>(), null, null, 1, 10, "RentAmount", "asc"))
-                .ReturnsAsync(paginatedResult);
+            //_propertyServiceMock.Setup(s => s.SearchPropertiesAsync(
+            //    It.IsAny<string>(), null, null, 1, 10, "RentAmount", "asc"))
+            //    .ReturnsAsync(paginatedResult);
 
             _mapperMock.Setup(m => m.Map<IEnumerable<PropertyListDto>>(properties))
                 .Returns(new List<PropertyListDto> { new() });

@@ -33,6 +33,10 @@ namespace HouseRentAPI.Controllers
         {
             try
             {
+                if (registrationDto.Role == "Admin")
+                {
+                    return BadRequest(new ErrorResponse { Message = "Invalid role specified." });
+                }
                 var user = _mapper.Map<User>(registrationDto);
                 var registeredUser = await _userService.RegisterUserAsync(user, registrationDto.Password);
 

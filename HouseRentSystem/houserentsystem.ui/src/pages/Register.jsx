@@ -42,9 +42,9 @@ const Register = () => {
                 case 'Tenant':
                     navigate('/tenant-dashboard');
                     break;
-                case 'Admin':
-                    navigate('/admin-dashboard');
-                    break;
+                //case 'Admin':
+                //    navigate('/admin-dashboard');
+                //    break;
                 default:
                     setError('Unknown role');
             }
@@ -124,7 +124,7 @@ const Register = () => {
                     >
                         <option value="Tenant">Tenant</option>
                         <option value="Landlord">Landlord</option>
-                        <option value="Admin">Admin</option>
+                        {/*<option value="Admin">Admin</option>*/}
                     </select>
                 </div>
                 <button type="submit" className="btn btn-primary w-100">Register</button>
