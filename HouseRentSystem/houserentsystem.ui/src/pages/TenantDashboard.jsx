@@ -1,16 +1,17 @@
 import React from 'react';
 import Navbar from '../components/Navbar';
 import PropertyList from '../components/PropertyList';
+import Layout from '../components/Layout';
 
 const TenantDashboard = () => {
   return (
-    <div>
+    <Layout>
       <Navbar />
       <div className="container mt-5">
         <h2>Tenant Dashboard</h2>
         <PropertyList />
       </div>
-    </div>
+    </Layout>
   );
 };
 

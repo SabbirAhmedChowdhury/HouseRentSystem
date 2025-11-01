@@ -2,6 +2,8 @@ import React, { useState, useContext } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
+//import Navbar from '../components/Navbar';
+import Layout from '../components/Layout';
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -17,59 +19,87 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await api.post('/User/login', credentials);
-            login(response.data.userProfile, response.data.token);
-            switch (response.data.userProfile.role) {
-                case 'Landlord':
-                    navigate('/landlord-dashboard');
-                    break;
-                case 'Tenant':
-                    navigate('/tenant-dashboard');
-                    break;
-                case 'Admin':
-                    navigate('/admin-dashboard');
-                    break;
-                default:
-                    setError('Unknown role');
-            }
+            const res = await api.post('/User/login', credentials);
+            login(res.data.userProfile, res.data.token);
+
+            const role = res.data.userProfile.role;
+            const routes = {
+                Landlord: '/landlord-dashboard',
+                Tenant: '/tenant-dashboard',
+                Admin: '/admin-dashboard',
+            };
+            navigate(routes[role] ?? '/');
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');
         }
     };
 
     return (
-        <div className="auth-container">
-            <h2 className="auth-header">Login to House Rent System</h2>
-            {error && <div className="error-message mb-3">{error}</div>}
-            <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label className="form-label">Email</label>
-                    <input
-                        type="email"
-                        name="email"
-                        className="form-control"
-                        value={credentials.email}
-                        onChange={handleChange}
-                        required
-                    />
+        <Layout>
+            {/*<Navbar />*/}
+            {/* Hero Banner */}
+            {/*<div className="hero-banner text-center py-5">*/}
+            {/*    <div className="container">*/}
+            {/*        <h1 className="display-4 fw-bold">Find Your Perfect Home</h1>*/}
+            {/*        <p className="lead">Secure, modern, and hassle-free renting</p>*/}
+            {/*    </div>*/}
+            {/*</div>*/}
+
+            <div className="container my-5">
+                <div className="row justify-content-center">
+                    <div className="col-md-5 col-lg-4">
+                        <div className="card border-0 shadow-lg">
+                            <div className="card-body p-5">
+                                <h3 className="text-center mb-4 text-primary">Sign In</h3>
+
+                                {error && (
+                                    <div className="alert alert-danger small">{error}</div>
+                                )}
+
+                                <form onSubmit={handleSubmit}>
+                                    <div className="mb-3">
+                                        <label className="form-label">Email</label>
+                                        <input
+                                            type="email"
+                                            name="email"
+                                            className="form-control"
+                                            required
+                                            value={credentials.email}
+                                            onChange={handleChange}
+                                            placeholder="you@example.com"
+                                        />
+                                    </div>
+
+                                    <div className="mb-4">
+                                        <label className="form-label">Password</label>
+                                        <input
+                                            type="password"
+                                            name="password"
+                                            className="form-control"
+                                            required
+                                            value={credentials.password}
+                                            onChange={handleChange}
+                                            placeholder="••••••••"
+                                        />
+                                    </div>
+
+                                    <button type="submit" className="btn btn-primary w-100">
+                                        Login
+                                    </button>
+                                </form>
+
+                                <p className="text-center mt-4 small">
+                                    New here?{' '}
+                                    <Link to="/register" className="text-primary fw-bold">
+                                        Create an account
+                                    </Link>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div className="mb-3">
-                    <label className="form-label">Password</label>
-                    <input
-                        type="password"
-                        name="password"
-                        className="form-control"
-                        value={credentials.password}
-                        onChange={handleChange}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-primary w-100">Login</button>
-            </form>
-            <p className="mt-3 text-center">
-                Don't have an account? <Link to="/register" className="link">Register</Link>
-            </p>
-        </div>
+            </div>
+        </Layout>
     );
 };
 

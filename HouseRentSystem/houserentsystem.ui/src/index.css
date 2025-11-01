@@ -1,4 +1,4 @@
-:root {
+/*:root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
@@ -65,4 +65,125 @@ button:focus-visible {
   button {
     background-color: #f9f9f9;
   }
+}*/
+
+
+/* Custom teal primary */
+/*.btn-primary {
+    background-color: #008080;
+    border-color: #008080;
+}
+
+    .btn-primary:hover {
+        background-color: #006666;
+        border-color: #006666;
+    }
+
+.btn-outline-primary {
+    color: #008080;
+    border-color: #008080;
+}
+
+    .btn-outline-primary:hover {
+        background-color: #008080;
+        color: white;
+    }*/
+
+/* Hero banner */
+/*.hero-banner {
+    background: linear-gradient(rgba(0, 128, 128, 0.8), rgba(0, 128, 128, 0.9)), url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1573&q=80') center/cover no-repeat;
+    min-height: 40vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}*/
+
+/* Card animation */
+/*.card {
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+    .card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.15) !important;
+    }*/
+
+/* Logo size */
+/*.logo-img {
+    height: 50px;
+}*/
+
+
+/* ==== 1. Import Google Font (optional but nice) ==== */
+@import url('https://rsms.me/inter/inter.css');
+
+html {
+    font-family: 'Inter', sans-serif;
+}
+
+/* ==== 2. Bootstrap overrides ==== */
+:root {
+    --bs-primary: #008080;
+    --bs-primary-rgb: 0,128,128;
+    --bs-primary-dark: #006666;
+}
+
+/* Primary button */
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--bs-primary-dark);
+    border-color: var(--bs-primary-dark);
+}
+
+/* Outline primary */
+.btn-outline-primary {
+    color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+.btn-outline-primary:hover {
+    background-color: var(--bs-primary);
+    color: white;
+}
+
+/* Card hover lift */
+.card {
+    transition: transform .2s ease, box-shadow .2s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0,0,0,.15) !important;
+}
+
+/* Focus glow */
+.form-control:focus,
+.form-select:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 .25rem rgba(0,128,128,.25);
+}
+
+/* Navbar brand */
+.navbar-brand .logo-img {
+    height: 50px;
+}
+
+/* Footer */
+.footer {
+    background: #222;
+    color: #ddd;
+}
+
+.footer a {
+    color: #ddd;
+}
+
+.footer a:hover {
+    color: var(--bs-primary);
 }
