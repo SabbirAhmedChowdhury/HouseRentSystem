@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 //import Navbar from '../components/Navbar';
-import Layout from '../components/Layout';
 
 const Login = () => {
     const [credentials, setCredentials] = useState({ email: '', password: '' });
@@ -35,7 +34,7 @@ const Login = () => {
     };
 
     return (
-        <Layout>
+        <>
             {/*<Navbar />*/}
             {/* Hero Banner */}
             {/*<div className="hero-banner text-center py-5">*/}
@@ -99,7 +98,7 @@ const Login = () => {
                     </div>
                 </div>
             </div>
-        </Layout>
+        </>
     );
 };
 
