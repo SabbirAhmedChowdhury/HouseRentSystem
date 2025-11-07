@@ -5,6 +5,7 @@ import Profile from './pages/Profile';
 import LandlordDashboard from './pages/LandlordDashboard';
 import TenantDashboard from './pages/TenantDashboard';
 import AdminDashboard from './pages/AdminDashboard';
+import CreateMaintenanceRequest from './pages/CreateMaintenanceRequest';
 import PropertyList from './components/PropertyList';
 import PropertyDetails from './components/PropertyDetails';
 import CreateProperty from './components/CreateProperty';
@@ -26,6 +27,7 @@ function App() {
         <Route path="/property/create" element={<CreateProperty />} />
         <Route path="/property/edit/:id" element={<UpdateProperty />} />
         <Route path="/property/:id/images" element={<UploadPropertyImages />} />
+        <Route path="/maintenance/request" element={<CreateMaintenanceRequest />} />
       </Routes>
     </Router>
   );

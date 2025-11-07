@@ -1,3 +1,5 @@
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
@@ -10,44 +12,110 @@ const PropertyDetails = () => {
     const navigate = useNavigate();
 
     const [property, setProperty] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [lease, setLease] = useState(null);
+    const [leaseForm, setLeaseForm] = useState({
+        startDate: '',
+        endDate: '',
+        monthlyRent: '',
+        termsAndConditions: '',
+    });
     const [error, setError] = useState('');
-    const [deleteError, setDeleteError] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+    const [showLeaseForm, setShowLeaseForm] = useState(false);
+    const [renewDate, setRenewDate] = useState('');
 
     useEffect(() => {
         fetchProperty();
     }, [id]);
 
     const fetchProperty = async () => {
-        setLoading(true);
-        setError('');
+        setIsLoading(true);
         try {
-            const res = await api.get(`/Property/${id}`);
-            setProperty(res.data);
+            const response = await api.get(`/Property/${id}`);
+            setProperty(response.data);
+            setLeaseForm({ ...leaseForm, monthlyRent: response.data.rentAmount });
+            const leaseResponse = await api.get(`/Lease/property/${id}`);
+            if (leaseResponse.data.length > 0) {
+                setLease(leaseResponse.data[0]);
+            }
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to load property');
         } finally {
-            setLoading(false);
+            setIsLoading(false);
+        }
+    };
+
+    const handleLeaseChange = (e) => {
+        setLeaseForm({ ...leaseForm, [e.target.name]: e.target.value });
+    };
+
+    const handleCreateLease = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await api.post('/Lease', {
+                startDate: leaseForm.startDate,
+                endDate: leaseForm.endDate,
+                monthlyRent: leaseForm.monthlyRent,
+                termsAndConditions: leaseForm.termsAndConditions,
+                propertyId: id,
+                tenantId: user.userId,
+            });
+            setLease(response.data);
+            setShowLeaseForm(false);
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to create lease');
+        }
+    };
+
+    const handleEndLease = async () => {
+        try {
+            await api.put(`/Lease/${lease.leaseId}/end`);
+            setLease(null);
+            fetchProperty();
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to end lease');
+        }
+    };
+
+    const handleRenewLease = async () => {
+        try {
+            await api.put(`/Lease/${lease.leaseId}/renew`, { newEndDate: renewDate });
+            fetchProperty();
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to renew lease');
+        }
+    };
+
+    const handleDownloadDocument = async () => {
+        try {
+            const response = await api.get(`/Lease/${lease.leaseId}/document`, { responseType: 'blob' });
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', 'lease_document.pdf');
+            document.body.appendChild(link);
+            link.click();
+        } catch (err) {
+            setError(err.response?.data?.message || 'Failed to download document');
         }
     };
 
     const handleDelete = async () => {
         if (!property.isAvailable) {
-            setDeleteError('Cannot delete an occupied property');
+            setError('Cannot delete an occupied property');
             return;
         }
-
-        if (window.confirm('Are you sure you want want to delete this property?')) {
+        if (window.confirm('Are you sure you want to delete this property?')) {
             try {
                 await api.delete(`/Property/${id}`);
                 navigate('/landlord-dashboard');
             } catch (err) {
-                setDeleteError(err.response?.data?.message || 'Failed to delete property');
+                setError(err.response?.data?.message || 'Failed to delete property');
             }
         }
     };
 
-    if (loading) {
+    if (isLoading) {
         return (
             <Layout>
                 <div className="container py-5 text-center">
@@ -233,9 +301,32 @@ const PropertyDetails = () => {
                                     )}
                                 </div>
 
+                                {/* Lease Section */}
+                                <div className="mt-4">
+                                    <h6 className="text-primary">Lease Information</h6>
+                                    {lease ? (
+                                        <div>
+                                            <p>Lease ID: {lease.leaseId}</p>
+                                            <p>Start Date: {new Date(lease.startDate).toLocaleDateString()}</p>
+                                            <p>End Date: {new Date(lease.endDate).toLocaleDateString()}</p>
+                                            <p>Monthly Rent: {lease.monthlyRent}</p>
+                                            <p>Terms and Conditions: {lease.termsAndConditions}</p>
+                                            <button onClick={handleDownloadDocument} className="btn btn-primary">Download Lease Document</button>
+                                            <div className="mt-3">
+                                                <label className="form-label">New End Date for Renewal</label>
+                                                <input type="date" className="form-control" value={renewDate} onChange={(e) => setRenewDate(e.target.value)} />
+                                                <button onClick={handleRenewLease} className="btn btn-primary mt-2">Renew Lease</button>
+                                            </div>
+                                            <button onClick={handleEndLease} className="btn btn-danger mt-2">End Lease</button>
+                                        </div>
+                                    ) : (
+                                        <p>No current lease for this property.</p>
+                                    )}
+                                </div>
+
                                 {deleteError && (
                                     <div className="alert alert-danger mt-3 small">{deleteError}</div>
-                )}
+                                )}
                             </div>
                         </div>
                     </div>
