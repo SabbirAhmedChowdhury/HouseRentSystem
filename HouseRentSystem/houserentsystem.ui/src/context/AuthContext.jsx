@@ -8,10 +8,17 @@ export const AuthProvider = ({ children }) => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        const userProfile = JSON.parse(localStorage.getItem('userProfile'));
-        if (token && userProfile) {
-            setUser(userProfile);
-            setIsAuthenticated(true);
+        const userProfileStr = localStorage.getItem('userProfile');
+        if (token && userProfileStr) {
+            try {
+                const userProfile = JSON.parse(userProfileStr);
+                setUser(userProfile);
+                setIsAuthenticated(true);
+            } catch (error) {
+                console.error('Error parsing user profile:', error);
+                localStorage.removeItem('token');
+                localStorage.removeItem('userProfile');
+            }
         }
     }, []);
 

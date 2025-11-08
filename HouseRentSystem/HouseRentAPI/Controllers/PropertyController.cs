@@ -53,7 +53,8 @@ namespace HouseRentAPI.Controllers
 
         [HttpPost]
         [Authorize(Roles = "Landlord")]
-        public async Task<IActionResult> CreateProperty([FromBody] CreatePropertyDto createDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateProperty([FromForm] CreatePropertyDto createDto)
         {
             var property = _mapper.Map<Property>(createDto);
             property.LandlordId = GetCurrentUserId();
@@ -66,7 +67,8 @@ namespace HouseRentAPI.Controllers
 
         [HttpPut("{id}")]
         [Authorize(Roles = "Landlord,Admin")]
-        public async Task<IActionResult> UpdateProperty(int id, [FromBody] UpdatePropertyDto updateDto)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> UpdateProperty(int id, [FromForm] UpdatePropertyDto updateDto)
         {
             if (!await _propertyService.IsOwner(id, GetCurrentUserId()) && !User.IsInRole("Admin"))
                 return Forbid();

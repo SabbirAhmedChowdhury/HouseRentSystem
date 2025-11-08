@@ -31,19 +31,56 @@ const LandlordDashboard = () => {
         setLoading(true);
         setError('');
         try {
-            const [statsRes, propsRes, leasesRes, overdueRes, requestsRes] = await Promise.all([
-                api.get('/Property/landlord/stats'),
-                api.get('/Property'),
-                api.get('/Lease'),
-                api.get('/api/payments/overdue'),
-                api.get('/api/maintenance/property/all'), // Assuming an endpoint to get all requests for landlord's properties
-            ]);
-
-            setStats(statsRes.data);
-            setProperties(propsRes.data.filter(p => p.landlordId === user.userId));
-            setLeases(leasesRes.data);
-            setOverduePayments(overdueRes.data);
-            setMaintenanceRequests(requestsRes.data);
+            // First, get properties
+            const propsRes = await api.get(`/Property/landlord/${user.userId}`);
+            const properties = propsRes.data || [];
+            setProperties(properties);
+            
+            // Calculate stats from properties
+            const total = properties.length;
+            const available = properties.filter(p => p.isAvailable).length;
+            const occupied = total - available;
+            const revenue = properties
+                .filter(p => !p.isAvailable)
+                .reduce((sum, p) => sum + (p.rentAmount || 0), 0);
+            
+            setStats({ total, available, occupied, revenue });
+            
+            // Get leases for all properties
+            const allLeases = [];
+            for (const prop of properties) {
+                try {
+                    const leaseRes = await api.get(`/Lease/property/${prop.propertyId}`);
+                    if (leaseRes.data && Array.isArray(leaseRes.data)) {
+                        allLeases.push(...leaseRes.data);
+                    }
+                } catch (err) {
+                    // Property might not have leases
+                }
+            }
+            setLeases(allLeases);
+            
+            // Get overdue payments
+            try {
+                const overdueRes = await api.get('/payments/overdue');
+                setOverduePayments(overdueRes.data || []);
+            } catch (err) {
+                setOverduePayments([]);
+            }
+            
+            // Get maintenance requests for all properties
+            const allRequests = [];
+            for (const prop of properties) {
+                try {
+                    const reqRes = await api.get(`/maintenance/property/${prop.propertyId}`);
+                    if (reqRes.data && Array.isArray(reqRes.data)) {
+                        allRequests.push(...reqRes.data);
+                    }
+                } catch (err) {
+                    // Property might not have maintenance requests
+                }
+            }
+            setMaintenanceRequests(allRequests);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to load dashboard');
         } finally {
@@ -69,7 +106,7 @@ const LandlordDashboard = () => {
 
     const handleStatusUpdate = async (requestId, newStatus) => {
         try {
-            await api.put(`/api/maintenance/${requestId}/status`, { status: newStatus });
+            await api.put(`/maintenance/${requestId}/status`, { status: newStatus });
             fetchDashboardData();
         } catch (err) {
             alert(err.response?.data?.message || 'Failed to update status');
@@ -107,7 +144,7 @@ const LandlordDashboard = () => {
 
     const handleVerifyPayment = async (paymentId) => {
         try {
-            await api.post(`/api/payments/${paymentId}/verify`);
+            await api.post(`/payments/${paymentId}/verify`);
             fetchDashboardData();
         } catch (err) {
             alert(err.response?.data?.message || 'Failed to verify payment');
@@ -116,7 +153,7 @@ const LandlordDashboard = () => {
 
     const handleUpdatePaymentStatus = async (paymentId, newStatus) => {
         try {
-            await api.put(`/api/payments/${paymentId}/status`, { status: newStatus });
+            await api.put(`/payments/${paymentId}/status`, { status: newStatus });
             fetchDashboardData();
         } catch (err) {
             alert(err.response?.data?.message || 'Failed to update payment status');
@@ -321,11 +358,11 @@ const LandlordDashboard = () => {
                                     <tbody>
                                         {leases.map((l) => (
                                             <tr key={l.leaseId}>
-                                                <td>{properties.find(p => p.propertyId === l.propertyId)?.address}</td>
-                                                <td>{l.tenantId}</td>
+                                                <td>{properties.find(p => p.propertyId === l.propertyId)?.address || `Property ${l.propertyId}`}</td>
+                                                <td>Tenant #{l.tenantId}</td>
                                                 <td>{new Date(l.startDate).toLocaleDateString()}</td>
                                                 <td>{new Date(l.endDate).toLocaleDateString()}</td>
-                                                <td>BDT {l.monthlyRent.toLocaleString()}</td>
+                                                <td>BDT {l.monthlyRent?.toLocaleString() || '0'}</td>
                                                 <td>
                                                     <div className="btn-group" role="group">
                                                         <button
@@ -389,10 +426,10 @@ const LandlordDashboard = () => {
                                         {overduePayments.map((p) => (
                                             <tr key={p.paymentId}>
                                                 <td>{p.leaseId}</td>
-                                                <td>{p.lease.tenant.fullName}</td>
+                                                <td>{p.lease?.tenant?.fullName || p.lease?.tenantId || 'N/A'}</td>
                                                 <td>{new Date(p.dueDate).toLocaleDateString()}</td>
-                                                <td>BDT {p.amountPaid.toLocaleString()}</td>
-                                                <td>BDT {p.lateFee.toLocaleString()}</td>
+                                                <td>BDT {p.amountPaid?.toLocaleString() || '0'}</td>
+                                                <td>BDT {(p.lateFee || 0).toLocaleString()}</td>
                                                 <td>
                                                     <span className={`badge ${p.status === 'Pending' ? 'bg-warning' : 'bg-success'}`}>
                                                         {p.status}
@@ -455,8 +492,8 @@ const LandlordDashboard = () => {
                                     <tbody>
                                         {maintenanceRequests.map((r) => (
                                             <tr key={r.requestId}>
-                                                <td>{r.property.address}, {r.property.city}</td>
-                                                <td>{r.tenant.fullName}</td>
+                                                <td>{r.property?.address || 'N/A'}, {r.property?.city || ''}</td>
+                                                <td>{r.tenant?.fullName || `Tenant #${r.tenantId}`}</td>
                                                 <td>{r.description}</td>
                                                 <td>{new Date(r.requestDate).toLocaleDateString()}</td>
                                                 <td>

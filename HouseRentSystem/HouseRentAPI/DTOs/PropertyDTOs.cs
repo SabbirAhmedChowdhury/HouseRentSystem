@@ -30,6 +30,8 @@ namespace HouseRentAPI.DTOs
 
         [StringLength(1000)]
         public string? Description { get; set; }
+
+        public IFormFile thumbnail { get; set; }
     }
 
     public class PropertyDto

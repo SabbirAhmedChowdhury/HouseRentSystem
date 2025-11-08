@@ -24,10 +24,11 @@ const CreateMaintenanceRequest = () => {
 
     const fetchProperties = async () => {
         try {
-            const res = await api.get('/Lease/current');
-            const lease = res.data;
-            if (lease) {
-                setForm({ ...form, propertyId: lease.propertyId });
+            const res = await api.get(`/Lease/tenant/${user.userId}`);
+            const leases = Array.isArray(res.data) ? res.data : (res.data ? [res.data] : []);
+            const activeLease = leases.find(l => l.isActive) || leases[0];
+            if (activeLease) {
+                setForm({ ...form, propertyId: activeLease.propertyId });
             }
         } catch (err) {
             setError('Failed to load your leased property');
@@ -48,7 +49,7 @@ const CreateMaintenanceRequest = () => {
 
         setLoading(true);
         try {
-            await api.post('/api/maintenance', {
+            await api.post('/maintenance', {
                 description: form.description,
                 propertyId: parseInt(form.propertyId),
                 tenantId: user.userId,

@@ -21,13 +21,13 @@ const TenantDashboard = () => {
         setLoading(true);
         try {
             const [leaseRes, reqRes] = await Promise.all([
-                api.get('/Lease/current'),
-                api.get(`/api/maintenance/tenant/${user.userId}`),
+                api.get(`/Lease/tenant/${user.userId}`).catch(() => ({ data: null })),
+                api.get(`/maintenance/tenant/${user.userId}`).catch(() => ({ data: [] })),
             ]);
             setLease(leaseRes.data);
-            setRequests(reqRes.data);
+            setRequests(Array.isArray(reqRes.data) ? reqRes.data : []);
         } catch (err) {
-            setError('Failed to load dashboard');
+            setError(err.response?.data?.message || 'Failed to load dashboard');
         } finally {
             setLoading(false);
         }
@@ -63,19 +63,18 @@ const TenantDashboard = () => {
                                 {lease ? (
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <p><strong>Property:</strong> {lease.propertyAddress}, {lease.propertyCity}</p>
-                                            <p><strong>Rent:</strong> BDT {lease.rentAmount.toLocaleString()}/month</p>
+                                            <p><strong>Property ID:</strong> {lease.propertyId}</p>
+                                            <p><strong>Rent:</strong> BDT {lease.monthlyRent?.toLocaleString() || 'N/A'}/month</p>
+                                            <p><strong>Start Date:</strong> {new Date(lease.startDate).toLocaleDateString()}</p>
+                                            <p><strong>End Date:</strong> {new Date(lease.endDate).toLocaleDateString()}</p>
                                         </div>
                                         <div className="col-md-6">
-                                            <p><strong>Progress:</strong> {lease.progressPercentage}%</p>
-                                            <div className="progress" style={{ height: '20px' }}>
-                                                <div
-                                                    className="progress-bar bg-success"
-                                                    style={{ width: `${lease.progressPercentage}%` }}
-                                                >
-                                                    {lease.progressPercentage}%
-                                                </div>
-                                            </div>
+                                            <p><strong>Status:</strong> {lease.isActive ? 'Active' : 'Inactive'}</p>
+                                            {lease.startDate && lease.endDate && (
+                                                <>
+                                                    <p><strong>Duration:</strong> {Math.ceil((new Date(lease.endDate) - new Date(lease.startDate)) / (1000 * 60 * 60 * 30))} months</p>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 ) : (
@@ -135,7 +134,7 @@ const TenantDashboard = () => {
                                             <strong>{r.description}</strong>
                                             <br />
                                             <small className="text-muted">
-                                                {new Date(r.requestDate).toLocaleDateString()} • {r.property.address}
+                                                {new Date(r.requestDate).toLocaleDateString()} ï¿½ {r.property?.address || 'N/A'}
                                             </small>
                                         </div>
                                         <span className={getStatusBadge(r.status)}>
