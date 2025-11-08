@@ -308,9 +308,11 @@ const PropertyDetails = () => {
                                         <div>
                                             <p>Lease ID: {lease.leaseId}</p>
                                             <p>Start Date: {new Date(lease.startDate).toLocaleDateString()}</p>
-                                            <p>End Date: {new Date(lease.endDate).toLocaleDateString()}</p>
+                                            <p>End Date: {lease.endDate ? new Date(lease.endDate).toLocaleDateString() : 'Open-ended'}</p>
                                             <p>Monthly Rent: {lease.monthlyRent}</p>
-                                            <p>Terms and Conditions: {lease.termsAndConditions}</p>
+                                            {lease.termsAndConditions && (
+                                                <p>Terms and Conditions: {lease.termsAndConditions}</p>
+                                            )}
                                             <button onClick={handleDownloadDocument} className="btn btn-primary">Download Lease Document</button>
                                             <div className="mt-3">
                                                 <label className="form-label">New End Date for Renewal</label>
@@ -324,9 +326,9 @@ const PropertyDetails = () => {
                                     )}
                                 </div>
 
-                                {deleteError && (
-                                    <div className="alert alert-danger mt-3 small">{deleteError}</div>
-                                )}
+                                {/*{deleteError && (*/}
+                                {/*    <div className="alert alert-danger mt-3 small">{deleteError}</div>*/}
+                                {/*)}*/}
                             </div>
                         </div>
                     </div>

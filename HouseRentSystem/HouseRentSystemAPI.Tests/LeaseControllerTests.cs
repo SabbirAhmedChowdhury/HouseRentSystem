@@ -30,7 +30,7 @@ namespace HouseRentSystemAPI.Tests
             var responseDto = new LeaseResponseDTO { LeaseId = 1 };
 
             _mockMapper.Setup(m => m.Map<Lease>(createDto)).Returns(lease);
-            _mockService.Setup(s => s.CreateLeaseAsync(lease, createDto.PropertyId, createDto.TenantId))
+            _mockService.Setup(s => s.CreateLeaseAsync(lease, createDto.PropertyId, createDto.TenantEmail))
                 .ReturnsAsync(lease);
             _mockMapper.Setup(m => m.Map<LeaseResponseDTO>(lease)).Returns(responseDto);
 

@@ -7,17 +7,22 @@ namespace HouseRentAPI.Models
     {
         public int LeaseId { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime? EndDate { get; set; } // Made nullable - lease can be open-ended
         public decimal MonthlyRent { get; set; }
         public string? TermsAndConditions { get; set; }
         public string? LeaseDocumentPath { get; set; }
         public DateTime CreatedAt { get; internal set; }
         public int PropertyId { get; set; }
         public int TenantId { get; set; }
+        
+        // Indicates if the lease is currently active (not ended)
+        public bool IsActive { get; set; } = true;
+        
+        // Navigation properties
         public Property Property { get; set; }
         public User Tenant { get; set; }
 
-        // Add the missing RentPayments property
+        // Collection of rent payments for this lease
         public ICollection<RentPayment> RentPayments { get; set; }        
     }
 }

@@ -6,6 +6,9 @@ import LandlordDashboard from './pages/LandlordDashboard';
 import TenantDashboard from './pages/TenantDashboard';
 import AdminDashboard from './pages/AdminDashboard';
 import CreateMaintenanceRequest from './pages/CreateMaintenanceRequest';
+import TenantLeaseManagement from './pages/TenantLeaseManagement';
+import LandlordLeaseManagement from './pages/LandlordLeaseManagement';
+import CreateLease from './pages/CreateLease';
 import PropertyList from './components/PropertyList';
 import PropertyDetails from './components/PropertyDetails';
 import CreateProperty from './components/CreateProperty';
@@ -28,6 +31,9 @@ function App() {
         <Route path="/property/edit/:id" element={<UpdateProperty />} />
         <Route path="/property/:id/images" element={<UploadPropertyImages />} />
         <Route path="/maintenance/request" element={<CreateMaintenanceRequest />} />
+        <Route path="/tenant-lease-management" element={<TenantLeaseManagement />} />
+        <Route path="/landlord-lease-management" element={<LandlordLeaseManagement />} />
+        <Route path="/lease/create" element={<CreateLease />} />
       </Routes>
     </Router>
   );

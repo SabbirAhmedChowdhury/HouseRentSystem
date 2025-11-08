@@ -219,8 +219,15 @@ const LandlordDashboard = () => {
                     </div>
                 </div>
 
-                {/* Action Button */}
-                <div className="text-end mb-4">
+                {/* Action Buttons */}
+                <div className="text-end mb-4 d-flex gap-2 justify-content-end">
+                    <Link
+                        to="/landlord-lease-management"
+                        className="btn btn-outline-primary btn-lg"
+                    >
+                        <i className="bi bi-file-earmark-text me-2"></i>
+                        Manage Leases
+                    </Link>
                     <Link
                         to="/property/create"
                         className="btn btn-primary btn-lg"
@@ -330,11 +337,18 @@ const LandlordDashboard = () => {
 
                 {/* Leases Section */}
                 <div className="card border-0 shadow-lg mb-5">
-                    <div className="card-header bg-primary text-white">
+                    <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">
                             <i className="bi bi-file-earmark-text me-2"></i>
                             Active Leases
                         </h5>
+                        <Link
+                            to="/landlord-lease-management"
+                            className="btn btn-sm btn-light"
+                        >
+                            <i className="bi bi-arrow-right me-1"></i>
+                            View All Leases
+                        </Link>
                     </div>
                     <div className="card-body p-0">
                         {leases.length === 0 ? (
@@ -361,7 +375,7 @@ const LandlordDashboard = () => {
                                                 <td>{properties.find(p => p.propertyId === l.propertyId)?.address || `Property ${l.propertyId}`}</td>
                                                 <td>Tenant #{l.tenantId}</td>
                                                 <td>{new Date(l.startDate).toLocaleDateString()}</td>
-                                                <td>{new Date(l.endDate).toLocaleDateString()}</td>
+                                                <td>{l.endDate ? new Date(l.endDate).toLocaleDateString() : 'Open-ended'}</td>
                                                 <td>BDT {l.monthlyRent?.toLocaleString() || '0'}</td>
                                                 <td>
                                                     <div className="btn-group" role="group">

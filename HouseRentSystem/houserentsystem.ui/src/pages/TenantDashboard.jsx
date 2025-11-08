@@ -20,11 +20,25 @@ const TenantDashboard = () => {
     const fetchData = async () => {
         setLoading(true);
         try {
-            const [leaseRes, reqRes] = await Promise.all([
-                api.get(`/Lease/tenant/${user.userId}`).catch(() => ({ data: null })),
-                api.get(`/maintenance/tenant/${user.userId}`).catch(() => ({ data: [] })),
-            ]);
-            setLease(leaseRes.data);
+            // Fetch active lease first
+            let activeLease = null;
+            try {
+                const activeRes = await api.get(`/Lease/tenant/${user.userId}/active`);
+                activeLease = activeRes.data;
+            } catch (err) {
+                // No active lease found, try to get from all leases
+                try {
+                    const allLeasesRes = await api.get(`/Lease/tenant/${user.userId}`);
+                    const allLeases = Array.isArray(allLeasesRes.data) ? allLeasesRes.data : [];
+                    activeLease = allLeases.find(l => l.isActive) || null;
+                } catch (err2) {
+                    // No leases found
+                }
+            }
+            setLease(activeLease);
+
+            // Fetch maintenance requests
+            const reqRes = await api.get(`/maintenance/tenant/${user.userId}`).catch(() => ({ data: [] }));
             setRequests(Array.isArray(reqRes.data) ? reqRes.data : []);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to load dashboard');
@@ -66,7 +80,7 @@ const TenantDashboard = () => {
                                             <p><strong>Property ID:</strong> {lease.propertyId}</p>
                                             <p><strong>Rent:</strong> BDT {lease.monthlyRent?.toLocaleString() || 'N/A'}/month</p>
                                             <p><strong>Start Date:</strong> {new Date(lease.startDate).toLocaleDateString()}</p>
-                                            <p><strong>End Date:</strong> {new Date(lease.endDate).toLocaleDateString()}</p>
+                                            <p><strong>End Date:</strong> {lease.endDate ? new Date(lease.endDate).toLocaleDateString() : 'Open-ended'}</p>
                                         </div>
                                         <div className="col-md-6">
                                             <p><strong>Status:</strong> {lease.isActive ? 'Active' : 'Inactive'}</p>
@@ -75,10 +89,25 @@ const TenantDashboard = () => {
                                                     <p><strong>Duration:</strong> {Math.ceil((new Date(lease.endDate) - new Date(lease.startDate)) / (1000 * 60 * 60 * 30))} months</p>
                                                 </>
                                             )}
+                                            {lease.startDate && !lease.endDate && (
+                                                <>
+                                                    <p><strong>Duration:</strong> Open-ended lease</p>
+                                                </>
+                                            )}
                                         </div>
                                     </div>
                                 ) : (
-                                    <p className="text-muted">No active lease. <Link to="/properties">Browse properties</Link></p>
+                                    <div>
+                                        <p className="text-muted">No active lease.</p>
+                                        <div className="d-flex gap-2">
+                                            <Link to="/properties" className="btn btn-sm btn-primary">
+                                                Browse Properties
+                                            </Link>
+                                            <Link to="/tenant-lease-management" className="btn btn-sm btn-outline-primary">
+                                                View Lease History
+                                            </Link>
+                                        </div>
+                                    </div>
                                 )}
                             </div>
                         </div>
@@ -91,13 +120,20 @@ const TenantDashboard = () => {
                                 <h5 className="mb-0">Quick Actions</h5>
                             </div>
                             <div className="card-body d-grid gap-2">
-                                <Link to="/maintenance/request" className="btn btn-primary">
+                                <Link to="/tenant-lease-management" className="btn btn-primary">
+                                    <i className="bi bi-file-earmark-text me-1"></i>
+                                    Manage Leases
+                                </Link>
+                                <Link to="/maintenance/request" className="btn btn-outline-primary">
+                                    <i className="bi bi-wrench me-1"></i>
                                     Report Issue
                                 </Link>
                                 <Link to="/properties" className="btn btn-outline-primary">
+                                    <i className="bi bi-house me-1"></i>
                                     Browse Properties
                                 </Link>
                                 <Link to="/profile" className="btn btn-outline-secondary">
+                                    <i className="bi bi-person me-1"></i>
                                     Update Profile
                                 </Link>
                             </div>
