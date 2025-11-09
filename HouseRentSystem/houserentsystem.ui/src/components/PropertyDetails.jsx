@@ -5,6 +5,8 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import Layout from '../components/Layout';
+import { getImageUrl, getImageUrls } from '../utils/imageUtils';
+import { getBackRoute, getDashboardRoute } from '../utils/navigationUtils';
 
 const PropertyDetails = () => {
     const { id } = useParams();
@@ -23,6 +25,8 @@ const PropertyDetails = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [showLeaseForm, setShowLeaseForm] = useState(false);
     const [renewDate, setRenewDate] = useState('');
+    const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+    const [showImageModal, setShowImageModal] = useState(false);
 
     useEffect(() => {
         fetchProperty();
@@ -32,8 +36,24 @@ const PropertyDetails = () => {
         setIsLoading(true);
         try {
             const response = await api.get(`/Property/${id}`);
-            setProperty(response.data);
-            setLeaseForm({ ...leaseForm, monthlyRent: response.data.rentAmount });
+            const propertyData = response.data;
+            
+            // Normalize images - use imageDetails if available, fallback to images array
+            // Convert relative paths to full URLs
+            if (propertyData.imageDetails && propertyData.imageDetails.length > 0) {
+                propertyData.images = getImageUrls(propertyData.imageDetails);
+            } else if (propertyData.images && propertyData.images.length > 0) {
+                propertyData.images = getImageUrls(propertyData.images);
+            } else {
+                propertyData.images = [];
+            }
+            
+            setProperty(propertyData);
+            setLeaseForm({ ...leaseForm, monthlyRent: propertyData.rentAmount });
+            
+            // Reset selected image index when property changes
+            setSelectedImageIndex(0);
+            
             const leaseResponse = await api.get(`/Lease/property/${id}`);
             if (leaseResponse.data.length > 0) {
                 setLease(leaseResponse.data[0]);
@@ -147,45 +167,99 @@ const PropertyDetails = () => {
                     <div className="col-lg-6 mb-4">
                         <div className="card border-0 shadow-lg">
                             {property.images && property.images.length > 0 ? (
-                                <div id="propertyCarousel" className="carousel slide">
-                                    <div className="carousel-inner">
-                                        {property.images.map((img, index) => (
-                                            <div
-                                                key={index}
-                                                className={`carousel-item ${index === 0 ? 'active' : ''}`}
-                                            >
-                                                <img
-                                                    src={img}
-                                                    className="d-block w-100"
-                                                    alt={`Property ${index + 1}`}
-                                                    style={{ height: '400px', objectFit: 'cover' }}
-                                                />
+                                <>
+                                    {/* Main Image Display */}
+                                    <div className="position-relative" style={{ height: '400px', overflow: 'hidden' }}>
+                                        <img
+                                            src={property.images[selectedImageIndex]}
+                                            className="w-100 h-100"
+                                            alt={`Property ${selectedImageIndex + 1}`}
+                                            style={{ objectFit: 'cover', cursor: 'pointer' }}
+                                            onClick={() => setShowImageModal(true)}
+                                        />
+                                        {property.images.length > 1 && (
+                                            <>
+                                                <button
+                                                    className="btn btn-sm btn-light position-absolute top-50 start-0 m-2"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedImageIndex((prev) => 
+                                                            prev === 0 ? property.images.length - 1 : prev - 1
+                                                        );
+                                                    }}
+                                                    title="Previous image"
+                                                >
+                                                    <i className="bi bi-chevron-left"></i>
+                                                </button>
+                                                <button
+                                                    className="btn btn-sm btn-light position-absolute top-50 end-0 m-2"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedImageIndex((prev) => 
+                                                            prev === property.images.length - 1 ? 0 : prev + 1
+                                                        );
+                                                    }}
+                                                    title="Next image"
+                                                >
+                                                    <i className="bi bi-chevron-right"></i>
+                                                </button>
+                                                <div className="position-absolute bottom-0 start-0 end-0 bg-dark bg-opacity-50 text-white text-center p-2">
+                                                    Image {selectedImageIndex + 1} of {property.images.length}
+                                                    <button
+                                                        className="btn btn-sm btn-light ms-2"
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setShowImageModal(true);
+                                                        }}
+                                                    >
+                                                        <i className="bi bi-arrows-fullscreen me-1"></i>
+                                                        Maximize
+                                                    </button>
+                                                </div>
+                                            </>
+                                        )}
+                                        {property.images.length === 1 && (
+                                            <div className="position-absolute bottom-0 start-0 end-0 bg-dark bg-opacity-50 text-white text-center p-2">
+                                                <button
+                                                    className="btn btn-sm btn-light"
+                                                    onClick={() => setShowImageModal(true)}
+                                                >
+                                                    <i className="bi bi-arrows-fullscreen me-1"></i>
+                                                    Maximize
+                                                </button>
                                             </div>
-                                        ))}
+                                        )}
                                     </div>
+
+                                    {/* Thumbnail Gallery */}
                                     {property.images.length > 1 && (
-                                        <>
-                                            <button
-                                                className="carousel-control-prev"
-                                                type="button"
-                                                data-bs-target="#propertyCarousel"
-                                                data-bs-slide="prev"
-                                            >
-                                                <span className="carousel-control-prev-icon" aria-hidden="true"></span>
-                                                <span className="visually-hidden">Previous</span>
-                                            </button>
-                                            <button
-                                                className="carousel-control-next"
-                                                type="button"
-                                                data-bs-target="#propertyCarousel"
-                                                data-bs-slide="next"
-                                            >
-                                                <span className="carousel-control-next-icon" aria-hidden="true"></span>
-                                                <span className="visually-hidden">Next</span>
-                                            </button>
-                                        </>
+                                        <div className="p-3 bg-light">
+                                            <div className="d-flex gap-2 overflow-auto" style={{ maxHeight: '100px' }}>
+                                                {property.images.map((img, index) => (
+                                                    <img
+                                                        key={index}
+                                                        src={img}
+                                                        alt={`Thumbnail ${index + 1}`}
+                                                        className={`rounded border ${
+                                                            selectedImageIndex === index 
+                                                                ? 'border-primary border-3' 
+                                                                : 'border-secondary'
+                                                        }`}
+                                                        style={{
+                                                            width: '80px',
+                                                            height: '80px',
+                                                            objectFit: 'cover',
+                                                            cursor: 'pointer',
+                                                            flexShrink: 0
+                                                        }}
+                                                        onClick={() => setSelectedImageIndex(index)}
+                                                        title={`Select image ${index + 1}`}
+                                                    />
+                                                ))}
+                                            </div>
+                                        </div>
                                     )}
-                                </div>
+                                </>
                             ) : (
                                 <div
                                     className="d-flex align-items-center justify-content-center bg-light"
@@ -196,6 +270,86 @@ const PropertyDetails = () => {
                             )}
                         </div>
                     </div>
+
+                    {/* Image Modal for Maximized View */}
+                    {showImageModal && property.images && property.images.length > 0 && (
+                        <div
+                            className="modal fade show d-block"
+                            style={{ backgroundColor: 'rgba(0,0,0,0.9)', zIndex: 9999 }}
+                            onClick={() => setShowImageModal(false)}
+                        >
+                            <div className="modal-dialog modal-fullscreen">
+                                <div className="modal-content bg-transparent border-0">
+                                    <div className="modal-header border-0">
+                                        <button
+                                            type="button"
+                                            className="btn-close btn-close-white"
+                                            onClick={() => setShowImageModal(false)}
+                                            aria-label="Close"
+                                        ></button>
+                                    </div>
+                                    <div className="modal-body d-flex align-items-center justify-content-center position-relative">
+                                        <img
+                                            src={property.images[selectedImageIndex]}
+                                            alt={`Property ${selectedImageIndex + 1}`}
+                                            className="img-fluid"
+                                            style={{ maxHeight: '90vh', maxWidth: '90vw', objectFit: 'contain' }}
+                                            onClick={(e) => e.stopPropagation()}
+                                        />
+                                        {property.images.length > 1 && (
+                                            <>
+                                                <button
+                                                    className="btn btn-lg btn-light position-absolute start-0 top-50 translate-middle-y ms-3"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedImageIndex((prev) => 
+                                                            prev === 0 ? property.images.length - 1 : prev - 1
+                                                        );
+                                                    }}
+                                                >
+                                                    <i className="bi bi-chevron-left"></i>
+                                                </button>
+                                                <button
+                                                    className="btn btn-lg btn-light position-absolute end-0 top-50 translate-middle-y me-3"
+                                                    onClick={(e) => {
+                                                        e.stopPropagation();
+                                                        setSelectedImageIndex((prev) => 
+                                                            prev === property.images.length - 1 ? 0 : prev + 1
+                                                        );
+                                                    }}
+                                                >
+                                                    <i className="bi bi-chevron-right"></i>
+                                                </button>
+                                                <div className="position-absolute bottom-0 start-50 translate-middle-x mb-3 text-white text-center">
+                                                    <p className="mb-0">
+                                                        Image {selectedImageIndex + 1} of {property.images.length}
+                                                    </p>
+                                                    <div className="d-flex gap-2 justify-content-center mt-2">
+                                                        {property.images.map((_, index) => (
+                                                            <button
+                                                                key={index}
+                                                                className={`btn btn-sm rounded-circle ${
+                                                                    selectedImageIndex === index 
+                                                                        ? 'btn-light' 
+                                                                        : 'btn-outline-light'
+                                                                }`}
+                                                                style={{ width: '12px', height: '12px', padding: 0 }}
+                                                                onClick={(e) => {
+                                                                    e.stopPropagation();
+                                                                    setSelectedImageIndex(index);
+                                                                }}
+                                                                title={`Go to image ${index + 1}`}
+                                                            ></button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     {/* Property Info */}
                     <div className="col-lg-6">
@@ -270,12 +424,24 @@ const PropertyDetails = () => {
                                 <hr />
 
                                 <div className="d-flex gap-2">
-                                    <Link
-                                        to="/properties"
+                                    <button
+                                        onClick={() => navigate(getBackRoute(user?.role))}
                                         className="btn btn-outline-secondary flex-fill"
                                     >
+                                        <i className="bi bi-arrow-left me-1"></i>
                                         Back to List
-                                    </Link>
+                                    </button>
+                                    
+                                    {/* Home button for quick navigation */}
+                                    {user && (
+                                        <button
+                                            onClick={() => navigate(getDashboardRoute(user.role))}
+                                            className="btn btn-outline-primary"
+                                            title="Go to Dashboard"
+                                        >
+                                            <i className="bi bi-house"></i>
+                                        </button>
+                                    )}
 
                                     {(user?.role === 'Landlord' || user?.role === 'Admin') && (
                                         <>

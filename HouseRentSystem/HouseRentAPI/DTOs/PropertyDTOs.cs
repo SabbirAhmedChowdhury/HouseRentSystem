@@ -31,7 +31,10 @@ namespace HouseRentAPI.DTOs
         [StringLength(1000)]
         public string? Description { get; set; }
 
-        public IFormFile thumbnail { get; set; }
+        /// <summary>
+        /// Multiple property images - first image will be used as thumbnail
+        /// </summary>
+        public List<IFormFile>? Images { get; set; }
     }
 
     public class PropertyDto
@@ -47,9 +50,25 @@ namespace HouseRentAPI.DTOs
         public string Description { get; set; }
         public bool IsAvailable { get; set; }
         public DateTime CreatedAt { get; set; }
+        /// <summary>
+        /// List of image paths (for backward compatibility)
+        /// </summary>
         public List<string> Images { get; set; } = new();
+        /// <summary>
+        /// List of image information with IDs for deletion
+        /// </summary>
+        public List<PropertyImageDto> ImageDetails { get; set; } = new();
         public int LandlordId { get; set; }
         public string LandlordName { get; set; }
+    }
+
+    /// <summary>
+    /// DTO for property image information
+    /// </summary>
+    public class PropertyImageDto
+    {
+        public int ImageId { get; set; }
+        public string ImagePath { get; set; }
     }
 
     public class PropertyListDto
@@ -102,5 +121,10 @@ namespace HouseRentAPI.DTOs
         public string Description { get; set; }
 
         public bool? IsAvailable { get; set; }
+
+        /// <summary>
+        /// Additional property images to add (existing images are preserved)
+        /// </summary>
+        public List<IFormFile>? Images { get; set; }
     }
 }

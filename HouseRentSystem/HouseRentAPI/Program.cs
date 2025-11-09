@@ -142,6 +142,24 @@ app.UseMiddleware<ExceptionMiddleware>();
 
 //app.UseHttpsRedirection();
 
+// Configure static file serving for FileStorage
+// This allows images and other files to be accessed via HTTP
+var fileStoragePath = builder.Configuration["FileStorage:BasePath"] 
+    ?? Path.Combine(builder.Environment.ContentRootPath, "FileStorage");
+
+// Ensure the directory exists
+if (!Directory.Exists(fileStoragePath))
+{
+    Directory.CreateDirectory(fileStoragePath);
+}
+
+// Configure static files middleware to serve files from FileStorage
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new Microsoft.Extensions.FileProviders.PhysicalFileProvider(fileStoragePath),
+    RequestPath = "/FileStorage" // This maps /FileStorage/* requests to the physical directory
+});
+
 // Middleware order is critical!
 app.UseRouting();
 

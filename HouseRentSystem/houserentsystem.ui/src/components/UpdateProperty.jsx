@@ -4,6 +4,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import Layout from '../components/Layout';
+import { getImageUrl } from '../utils/imageUtils';
+import { getDashboardRoute } from '../utils/navigationUtils';
 
 const UpdateProperty = () => {
     const { id } = useParams();
@@ -22,9 +24,10 @@ const UpdateProperty = () => {
         isAvailable: true,
     });
 
-    const [thumbnail, setThumbnail] = useState(null);
-    const [thumbnailPreview, setThumbnailPreview] = useState('');
-    const [originalThumbnail, setOriginalThumbnail] = useState('');
+    const [existingImages, setExistingImages] = useState([]); // Images from server with IDs
+    const [newImages, setNewImages] = useState([]); // New images to upload
+    const [newImagePreviews, setNewImagePreviews] = useState([]);
+    const [deletedImageIds, setDeletedImageIds] = useState([]); // IDs of images to delete
     const [errors, setErrors] = useState({});
     const [submitError, setSubmitError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,8 +50,22 @@ const UpdateProperty = () => {
                     description: data.description || '',
                     isAvailable: data.isAvailable,
                 });
-                setOriginalThumbnail(data.thumbnail || '');
-                setThumbnailPreview(data.thumbnail || '');
+                
+                // Set existing images from server (use ImageDetails if available, fallback to Images)
+                // Convert relative paths to full URLs for display
+                if (data.imageDetails && data.imageDetails.length > 0) {
+                    setExistingImages(data.imageDetails.map(img => ({
+                        imageId: img.imageId,
+                        imagePath: getImageUrl(img.imagePath) // Convert to full URL
+                    })));
+                } else if (data.images && data.images.length > 0) {
+                    // Fallback: create image details from paths (without IDs for deletion)
+                    setExistingImages(data.images.map((path, index) => ({ 
+                        imageId: null, 
+                        imagePath: getImageUrl(path) // Convert to full URL
+                    })));
+                }
+                
                 setLoading(false);
             } catch (err) {
                 setSubmitError('Failed to load property');
@@ -69,16 +86,79 @@ const UpdateProperty = () => {
         }
     };
 
-    const handleThumbnailChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setThumbnail(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setThumbnailPreview(reader.result);
-            };
-            reader.readAsDataURL(file);
+    /**
+     * Handles multiple new image file selection
+     */
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        // Calculate total images (existing + new)
+        const totalImages = existingImages.filter(img => !deletedImageIds.includes(img.imageId)).length + newImages.length;
+        
+        // Validate file count (max 10 images total)
+        if (totalImages + files.length > 10) {
+            setSubmitError('Maximum 10 images allowed total');
+            return;
         }
+
+        // Validate file types and sizes
+        const validFiles = [];
+        const invalidFiles = [];
+
+        files.forEach(file => {
+            if (!file.type.startsWith('image/')) {
+                invalidFiles.push(file.name + ' (not an image)');
+            } else if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                invalidFiles.push(file.name + ' (file too large, max 5MB)');
+            } else {
+                validFiles.push(file);
+            }
+        });
+
+        if (invalidFiles.length > 0) {
+            setSubmitError(`Invalid files: ${invalidFiles.join(', ')}`);
+        }
+
+        if (validFiles.length > 0) {
+            const updatedNewImages = [...newImages, ...validFiles];
+            setNewImages(updatedNewImages);
+
+            // Create previews for new images
+            validFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setNewImagePreviews(prev => [...prev, reader.result]);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    };
+
+    /**
+     * Removes a new image from the selection
+     */
+    const handleRemoveNewImage = (index) => {
+        const updatedNewImages = newImages.filter((_, i) => i !== index);
+        const updatedPreviews = newImagePreviews.filter((_, i) => i !== index);
+        setNewImages(updatedNewImages);
+        setNewImagePreviews(updatedPreviews);
+    };
+
+    /**
+     * Marks an existing image for deletion
+     */
+    const handleDeleteExistingImage = (imageId) => {
+        if (imageId) {
+            setDeletedImageIds(prev => [...prev, imageId]);
+        }
+    };
+
+    /**
+     * Restores a previously marked image for deletion
+     */
+    const handleRestoreImage = (imageId) => {
+        setDeletedImageIds(prev => prev.filter(id => id !== imageId));
     };
 
     const validateForm = () => {
@@ -103,18 +183,47 @@ const UpdateProperty = () => {
         setIsSubmitting(true);
         setSubmitError('');
 
-        const formData = new FormData();
-        Object.keys(form).forEach((key) => {
-            formData.append(key, form[key]);
-        });
-        if (thumbnail) {
-            formData.append('thumbnail', thumbnail);
-        }
-
         try {
-            await api.put(`/Property/${id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
-            });
+            // First, delete marked images
+            for (const imageId of deletedImageIds) {
+                try {
+                    await api.delete(`/Property/images/${imageId}`);
+                } catch (err) {
+                    console.error(`Failed to delete image ${imageId}:`, err);
+                }
+            }
+
+            // Then, update property with new images if any
+            if (newImages.length > 0) {
+                const formData = new FormData();
+                Object.keys(form).forEach((key) => {
+                    if (form[key] !== null && form[key] !== undefined) {
+                        formData.append(key, form[key]);
+                    }
+                });
+                
+                // Append new images
+                newImages.forEach((image) => {
+                    formData.append('Images', image);
+                });
+
+                await api.put(`/Property/${id}`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+            } else {
+                // Just update property data without images
+                const formData = new FormData();
+                Object.keys(form).forEach((key) => {
+                    if (form[key] !== null && form[key] !== undefined) {
+                        formData.append(key, form[key]);
+                    }
+                });
+
+                await api.put(`/Property/${id}`, formData, {
+                    headers: { 'Content-Type': 'multipart/form-data' },
+                });
+            }
+
             navigate('/landlord-dashboard');
         } catch (err) {
             setSubmitError(err.response?.data?.message || 'Failed to update property');
@@ -278,26 +387,118 @@ const UpdateProperty = () => {
                                             </div>
                                         </div>
 
-                                        {/* Thumbnail */}
+                                        {/* Property Images */}
                                         <div className="col-12">
-                                            <label className="form-label">Property Thumbnail</label>
-                                            {thumbnailPreview && (
+                                            <label className="form-label">
+                                                Property Images
+                                                <small className="text-muted ms-2">(Add more images, max 10 total)</small>
+                                            </label>
+                                            
+                                            {/* Existing Images */}
+                                            {existingImages.length > 0 && (
                                                 <div className="mb-3">
-                                                    <img
-                                                        src={thumbnailPreview}
-                                                        alt="Current thumbnail"
-                                                        className="img-fluid rounded"
-                                                        style={{ maxHeight: '200px' }}
-                                                    />
-                                                    {thumbnail && <p className="small text-success mt-1">New image selected</p>}
+                                                    <h6 className="text-muted">Existing Images</h6>
+                                                    <div className="row g-2">
+                                                        {existingImages.map((img, index) => {
+                                                            const isDeleted = img.imageId && deletedImageIds.includes(img.imageId);
+                                                            const canDelete = img.imageId !== null && img.imageId !== undefined;
+                                                            return (
+                                                                <div key={img.imageId || `img-${index}`} className="col-md-3 col-sm-4 col-6">
+                                                                    <div className={`position-relative ${isDeleted ? 'opacity-50' : ''}`}>
+                                                                        <img
+                                                                            src={img.imagePath}
+                                                                            alt={`Property ${index + 1}`}
+                                                                            className="img-fluid rounded border"
+                                                                            style={{ 
+                                                                                height: '150px', 
+                                                                                width: '100%', 
+                                                                                objectFit: 'cover'
+                                                                            }}
+                                                                        />
+                                                                        {index === 0 && !isDeleted && (
+                                                                            <span className="badge bg-primary position-absolute top-0 start-0 m-1">
+                                                                                Thumbnail
+                                                                            </span>
+                                                                        )}
+                                                                        {canDelete && (
+                                                                            <button
+                                                                                type="button"
+                                                                                className={`btn btn-sm position-absolute top-0 end-0 m-1 ${
+                                                                                    isDeleted ? 'btn-success' : 'btn-danger'
+                                                                                }`}
+                                                                                onClick={() => 
+                                                                                    isDeleted 
+                                                                                        ? handleRestoreImage(img.imageId) 
+                                                                                        : handleDeleteExistingImage(img.imageId)
+                                                                                }
+                                                                                title={isDeleted ? 'Restore image' : 'Delete image'}
+                                                                            >
+                                                                                <i className={`bi ${isDeleted ? 'bi-arrow-counterclockwise' : 'bi-trash'}`}></i>
+                                                                            </button>
+                                                                        )}
+                                                                        {isDeleted && (
+                                                                            <div className="position-absolute bottom-0 start-0 end-0 bg-danger text-white text-center p-1">
+                                                                                Will be deleted
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            );
+                                                        })}
+                                                    </div>
                                                 </div>
                                             )}
-                                            <input
-                                                type="file"
-                                                className="form-control"
-                                                accept="image/*"
-                                                onChange={handleThumbnailChange}
-                                            />
+
+                                            {/* New Images Upload */}
+                                            <div className="mb-3">
+                                                <input
+                                                    type="file"
+                                                    className="form-control"
+                                                    accept="image/*"
+                                                    multiple
+                                                    onChange={handleImageChange}
+                                                />
+                                                <small className="text-muted d-block mt-1">
+                                                    Add more images. Supported formats: JPG, PNG, GIF. Max size: 5MB per image.
+                                                </small>
+                                            </div>
+
+                                            {/* New Image Previews */}
+                                            {newImagePreviews.length > 0 && (
+                                                <div className="mt-3">
+                                                    <h6 className="text-muted">New Images to Upload</h6>
+                                                    <div className="row g-2">
+                                                        {newImagePreviews.map((preview, index) => (
+                                                            <div key={index} className="col-md-3 col-sm-4 col-6">
+                                                                <div className="position-relative">
+                                                                    <img
+                                                                        src={preview}
+                                                                        alt={`New preview ${index + 1}`}
+                                                                        className="img-fluid rounded border"
+                                                                        style={{ 
+                                                                            height: '150px', 
+                                                                            width: '100%', 
+                                                                            objectFit: 'cover'
+                                                                        }}
+                                                                    />
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                                                                        onClick={() => handleRemoveNewImage(index)}
+                                                                        title="Remove image"
+                                                                    >
+                                                                        <i className="bi bi-x"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <small className="text-muted d-block">
+                                                Total images: {existingImages.filter(img => !img.imageId || !deletedImageIds.includes(img.imageId)).length + newImages.length} / 10
+                                            </small>
                                         </div>
 
                                         {/* Buttons */}
@@ -318,12 +519,25 @@ const UpdateProperty = () => {
                                             </button>
                                             <button
                                                 type="button"
-                                                className="btn btn-outline-secondary flex-fill"
-                                                onClick={() => navigate(-1)}
+                                                className="btn btn-outline-secondary"
+                                                onClick={() => navigate('/landlord-dashboard')}
                                                 disabled={isSubmitting}
+                                                title="Cancel and go to dashboard"
                                             >
+                                                <i className="bi bi-x-circle me-1"></i>
                                                 Cancel
                                             </button>
+                                            {user && (
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-outline-primary"
+                                                    onClick={() => navigate(getDashboardRoute(user.role))}
+                                                    disabled={isSubmitting}
+                                                    title="Go to Dashboard"
+                                                >
+                                                    <i className="bi bi-house"></i>
+                                                </button>
+                                            )}
                                         </div>
                                     </div>
                                 </form>

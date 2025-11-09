@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { getDashboardRoute } from '../utils/navigationUtils';
 
 const Navbar = () => {
     const { user, logout } = useContext(AuthContext);
@@ -8,13 +9,25 @@ const Navbar = () => {
 
     const handleLogout = () => {
         logout();
-        navigate('/');
+        navigate('/', { replace: true }); // Use replace to clear history
+    };
+
+    const handleLogoClick = (e) => {
+        e.preventDefault();
+        const route = user ? getDashboardRoute(user.role) : '/';
+        // Use replace: false to allow back button to work properly
+        navigate(route, { replace: false });
     };
 
     return (
         <nav className="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
             <div className="container">
-                <Link className="navbar-brand d-flex align-items-center" to="/">
+                <a 
+                    className="navbar-brand d-flex align-items-center" 
+                    href={getDashboardRoute()}
+                    onClick={handleLogoClick}
+                    style={{ cursor: 'pointer', textDecoration: 'none' }}
+                >
                     <img
                         src="/logo.png"
                         alt="Logo"
@@ -22,7 +35,7 @@ const Navbar = () => {
                         onError={e => e.currentTarget.src = 'https://via.placeholder.com/42?text=HR'}
                     />
                     <span className="fw-bold text-primary">House Rent</span>
-                </Link>
+                </a>
 
                 <button
                     className="navbar-toggler"

@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import Layout from '../components/Layout';
+import { getImageUrl } from '../utils/imageUtils';
 
 const LandlordDashboard = () => {
     const { user } = useContext(AuthContext);
@@ -276,7 +277,7 @@ const LandlordDashboard = () => {
                                                 <td>
                                                     {p.thumbnail ? (
                                                         <img
-                                                            src={p.thumbnail}
+                                                            src={getImageUrl(p.thumbnail)}
                                                             alt="Thumb"
                                                             className="rounded"
                                                             style={{ width: '60px', height: '60px', objectFit: 'cover' }}

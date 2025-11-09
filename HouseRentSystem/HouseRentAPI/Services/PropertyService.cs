@@ -19,7 +19,7 @@ namespace HouseRentAPI.Services
             _fileStorageService = fileStorageService;
         }
 
-        public async Task<Property> CreatePropertyAsync(Property property)
+        public async Task<Property> CreatePropertyAsync(Property property, IEnumerable<IFormFile>? images = null)
         {
             var propertyRepo = _unitOfWork.GetRepository<Property>();
             var userRepo = _unitOfWork.GetRepository<User>();
@@ -34,6 +34,12 @@ namespace HouseRentAPI.Services
             await propertyRepo.AddAsync(property);
             await _unitOfWork.SaveChangesAsync();
 
+            // Add images if provided
+            if (images != null && images.Any())
+            {
+                await AddPropertyImagesAsync(property.PropertyId, images);
+            }
+
             return property;
         }
 
@@ -43,11 +49,17 @@ namespace HouseRentAPI.Services
             return await propertyRepo.GetAllAsync();
         }
 
-        public async Task UpdatePropertyAsync(Property property)
+        public async Task UpdatePropertyAsync(Property property, IEnumerable<IFormFile>? images = null)
         {
             var propertyRepo = _unitOfWork.GetRepository<Property>();
             propertyRepo.Update(property);
             await _unitOfWork.SaveChangesAsync();
+
+            // Add new images if provided
+            if (images != null && images.Any())
+            {
+                await AddPropertyImagesAsync(property.PropertyId, images);
+            }
         }
 
         public async Task DeletePropertyAsync(int id)
@@ -195,6 +207,37 @@ namespace HouseRentAPI.Services
             if (property == null) throw new NotFoundException(nameof(Property), propertyId);
 
             return property?.LandlordId == userId;
+        }
+
+        /// <summary>
+        /// Deletes a specific property image by image ID
+        /// Verifies ownership before deletion
+        /// </summary>
+        /// <param name="imageId">ID of the image to delete</param>
+        /// <param name="userId">ID of the user requesting deletion</param>
+        /// <param name="isAdmin">Whether the user is an admin</param>
+        public async Task DeletePropertyImageAsync(int imageId, int userId, bool isAdmin = false)
+        {
+            var imageRepo = _unitOfWork.GetRepository<PropertyImage>();
+            var propertyRepo = _unitOfWork.GetRepository<Property>();
+            
+            // Get image with property information
+            var image = await imageRepo.GetByIdAsync(imageId);
+            if (image == null) throw new NotFoundException(nameof(PropertyImage), imageId);
+
+            // Verify ownership
+            var property = await propertyRepo.GetByIdAsync(image.PropertyId);
+            if (property == null) throw new NotFoundException(nameof(Property), image.PropertyId);
+            
+            if (!isAdmin && property.LandlordId != userId)
+                throw new UnauthorizedAccessException("You do not have permission to delete this image");
+
+            // Delete physical file
+            await _fileStorageService.DeleteFileAsync(image.ImagePath);
+
+            // Delete database record
+            imageRepo.Remove(image);
+            await _unitOfWork.SaveChangesAsync();
         }
         
     }

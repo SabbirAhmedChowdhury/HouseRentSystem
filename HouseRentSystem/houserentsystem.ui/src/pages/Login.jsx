@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 //import Navbar from '../components/Navbar';
@@ -9,6 +9,10 @@ const Login = () => {
     const [error, setError] = useState('');
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
+    const location = useLocation();
+    
+    // Get the page user was trying to access before login (if any)
+    const from = location.state?.from?.pathname || null;
 
     const handleChange = (e) => {
         setCredentials({ ...credentials, [e.target.name]: e.target.value });
@@ -27,7 +31,10 @@ const Login = () => {
                 Tenant: '/tenant-dashboard',
                 Admin: '/admin-dashboard',
             };
-            navigate(routes[role] ?? '/');
+            
+            // Navigate to the page user was trying to access, or their dashboard
+            const targetPath = from || routes[role] || '/';
+            navigate(targetPath, { replace: true });
         } catch (err) {
             setError(err.response?.data?.message || 'Login failed');
         }
@@ -78,7 +85,7 @@ const Login = () => {
                                             required
                                             value={credentials.password}
                                             onChange={handleChange}
-                                            placeholder="••••••••"
+                                            placeholder="ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½"
                                         />
                                     </div>
 

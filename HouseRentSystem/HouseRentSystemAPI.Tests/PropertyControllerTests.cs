@@ -84,11 +84,12 @@ namespace HouseRentSystemAPI.Tests
                 City = "Sample City"
             };
             var propertyDto = new PropertyDto { PropertyId = 1 };
+            IEnumerable<IFormFile>? images = null;
 
             _mapperMock.Setup(m => m.Map<Property>(createDto))
                 .Returns(property);
 
-            _propertyServiceMock.Setup(s => s.CreatePropertyAsync(property))
+            _propertyServiceMock.Setup(s => s.CreatePropertyAsync(property, images))
                 .ReturnsAsync(property);
 
             _mapperMock.Setup(m => m.Map<PropertyDto>(property))

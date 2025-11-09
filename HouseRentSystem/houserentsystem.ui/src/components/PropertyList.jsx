@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import Layout from '../components/Layout';
+import { getImageUrl } from '../utils/imageUtils';
 
 const PropertyList = () => {
     const { user } = useContext(AuthContext);
@@ -184,7 +185,7 @@ const PropertyList = () => {
                             <div className="card border-0 shadow-lg h-100">
                                 {property.thumbnail ? (
                                     <img
-                                        src={property.thumbnail}
+                                        src={getImageUrl(property.thumbnail)}
                                         className="card-img-top"
                                         alt={property.address}
                                         style={{ height: '200px', objectFit: 'cover' }}

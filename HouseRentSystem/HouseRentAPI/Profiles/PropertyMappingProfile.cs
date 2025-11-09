@@ -11,14 +11,34 @@ namespace HouseRentAPI.Profiles
             // Create mappings
             CreateMap<CreatePropertyDto, Property>()
                 .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.Now))
-                .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(_ => true));
+                .ForMember(dest => dest.IsAvailable, opt => opt.MapFrom(_ => true))
+                .ForMember(dest => dest.Images, opt => opt.Ignore()) // Images are handled separately in service layer
+                .ForMember(dest => dest.Landlord, opt => opt.Ignore())
+                .ForMember(dest => dest.Leases, opt => opt.Ignore())
+                .ForMember(dest => dest.MaintenanceRequests, opt => opt.Ignore())
+                .ForMember(dest => dest.UtilityBills, opt => opt.Ignore());
 
             CreateMap<UpdatePropertyDto, Property>()
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+            CreateMap<UpdatePropertyDto, Property>()
+                .ForMember(dest => dest.Images, opt => opt.Ignore()) // Images are handled separately in service layer
+                .ForMember(dest => dest.Landlord, opt => opt.Ignore())
+                .ForMember(dest => dest.Leases, opt => opt.Ignore())
+                .ForMember(dest => dest.MaintenanceRequests, opt => opt.Ignore())
+                .ForMember(dest => dest.UtilityBills, opt => opt.Ignore())
+                .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+                .ForMember(dest => dest.PropertyId, opt => opt.Ignore())
+                .ForMember(dest => dest.LandlordId, opt => opt.Ignore());
 
             CreateMap<Property, PropertyDto>()
                 .ForMember(dest => dest.Images,
                     opt => opt.MapFrom(src => src.Images.Select(i => i.ImagePath).ToList()))
+                .ForMember(dest => dest.ImageDetails,
+                    opt => opt.MapFrom(src => src.Images.Select(i => new PropertyImageDto
+                    {
+                        ImageId = i.ImageId,
+                        ImagePath = i.ImagePath
+                    }).ToList()))
                 .ForMember(dest => dest.LandlordName,
                     opt => opt.MapFrom(src => src.Landlord.FullName));
 

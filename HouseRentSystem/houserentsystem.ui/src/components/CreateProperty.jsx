@@ -21,8 +21,8 @@ const CreateProperty = () => {
         isAvailable: true,
     });
 
-    const [thumbnail, setThumbnail] = useState(null);
-    const [thumbnailPreview, setThumbnailPreview] = useState(null);
+    const [images, setImages] = useState([]);
+    const [imagePreviews, setImagePreviews] = useState([]);
     const [errors, setErrors] = useState({});
     const [submitError, setSubmitError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -40,17 +40,61 @@ const CreateProperty = () => {
         }
     };
 
-    // Handle thumbnail selection
-    const handleThumbnailChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setThumbnail(file);
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setThumbnailPreview(reader.result);
-            };
-            reader.readAsDataURL(file);
+    /**
+     * Handles multiple image file selection
+     * Supports selecting multiple images at once
+     */
+    const handleImageChange = (e) => {
+        const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
+        // Validate file count (max 10 images)
+        if (images.length + files.length > 10) {
+            setSubmitError('Maximum 10 images allowed');
+            return;
         }
+
+        // Validate file types and sizes
+        const validFiles = [];
+        const invalidFiles = [];
+
+        files.forEach(file => {
+            if (!file.type.startsWith('image/')) {
+                invalidFiles.push(file.name + ' (not an image)');
+            } else if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                invalidFiles.push(file.name + ' (file too large, max 5MB)');
+            } else {
+                validFiles.push(file);
+            }
+        });
+
+        if (invalidFiles.length > 0) {
+            setSubmitError(`Invalid files: ${invalidFiles.join(', ')}`);
+        }
+
+        if (validFiles.length > 0) {
+            const newImages = [...images, ...validFiles];
+            setImages(newImages);
+
+            // Create previews for new images
+            validFiles.forEach(file => {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    setImagePreviews(prev => [...prev, reader.result]);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    };
+
+    /**
+     * Removes an image from the selection
+     */
+    const handleRemoveImage = (index) => {
+        const newImages = images.filter((_, i) => i !== index);
+        const newPreviews = imagePreviews.filter((_, i) => i !== index);
+        setImages(newImages);
+        setImagePreviews(newPreviews);
     };
 
     // Client-side validation
@@ -81,9 +125,11 @@ const CreateProperty = () => {
         Object.keys(form).forEach((key) => {
             formData.append(key, form[key]);
         });
-        if (thumbnail) {
-            formData.append('thumbnail', thumbnail);
-        }
+        
+        // Append multiple images
+        images.forEach((image, index) => {
+            formData.append('Images', image);
+        });
 
         try {
             await api.post('/Property', formData, {
@@ -240,32 +286,70 @@ const CreateProperty = () => {
                                             </div>
                                         </div>
 
-                                        {/* Thumbnail Upload */}
+                                        {/* Multiple Images Upload */}
                                         <div className="col-12">
-                                            <label className="form-label">Property Thumbnail</label>
+                                            <label className="form-label">
+                                                Property Images <span className="text-danger">*</span>
+                                                <small className="text-muted ms-2">(Select multiple images, max 10)</small>
+                                            </label>
                                             <input
                                                 type="file"
                                                 className="form-control"
                                                 accept="image/*"
-                                                onChange={handleThumbnailChange}
+                                                multiple
+                                                onChange={handleImageChange}
                                             />
-                                            {thumbnailPreview && (
+                                            <small className="text-muted d-block mt-1">
+                                                First image will be used as thumbnail. Supported formats: JPG, PNG, GIF. Max size: 5MB per image.
+                                            </small>
+                                            
+                                            {/* Image Previews */}
+                                            {imagePreviews.length > 0 && (
                                                 <div className="mt-3">
-                                                    <img
-                                                        src={thumbnailPreview}
-                                                        alt="Preview"
-                                                        className="img-fluid rounded"
-                                                        style={{ maxHeight: '200px' }}
-                                                    />
+                                                    <div className="row g-2">
+                                                        {imagePreviews.map((preview, index) => (
+                                                            <div key={index} className="col-md-3 col-sm-4 col-6">
+                                                                <div className="position-relative">
+                                                                    <img
+                                                                        src={preview}
+                                                                        alt={`Preview ${index + 1}`}
+                                                                        className="img-fluid rounded border"
+                                                                        style={{ 
+                                                                            height: '150px', 
+                                                                            width: '100%', 
+                                                                            objectFit: 'cover',
+                                                                            cursor: 'pointer'
+                                                                        }}
+                                                                    />
+                                                                    {index === 0 && (
+                                                                        <span className="badge bg-primary position-absolute top-0 start-0 m-1">
+                                                                            Thumbnail
+                                                                        </span>
+                                                                    )}
+                                                                    <button
+                                                                        type="button"
+                                                                        className="btn btn-sm btn-danger position-absolute top-0 end-0 m-1"
+                                                                        onClick={() => handleRemoveImage(index)}
+                                                                        title="Remove image"
+                                                                    >
+                                                                        <i className="bi bi-x"></i>
+                                                                    </button>
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                    <small className="text-muted d-block mt-2">
+                                                        {imagePreviews.length} image(s) selected. Drag to reorder (coming soon).
+                                                    </small>
                                                 </div>
                                             )}
                                         </div>
 
                                         {/* Submit */}
-                                        <div className="col-12 mt-4">
+                                        <div className="col-12 mt-4 d-flex gap-2">
                                             <button
                                                 type="submit"
-                                                className="btn btn-primary w-100"
+                                                className="btn btn-primary flex-fill"
                                                 disabled={isSubmitting}
                                             >
                                                 {isSubmitting ? (
@@ -274,8 +358,21 @@ const CreateProperty = () => {
                                                         Creating...
                                                     </>
                                                 ) : (
-                                                    'Create Property'
+                                                    <>
+                                                        <i className="bi bi-check-circle me-2"></i>
+                                                        Create Property
+                                                    </>
                                                 )}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-secondary"
+                                                onClick={() => navigate('/landlord-dashboard')}
+                                                disabled={isSubmitting}
+                                                title="Cancel and go to dashboard"
+                                            >
+                                                <i className="bi bi-x-circle me-1"></i>
+                                                Cancel
                                             </button>
                                         </div>
                                     </div>

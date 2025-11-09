@@ -51,6 +51,10 @@ namespace HouseRentAPI.Controllers
             return Ok(_mapper.Map<PropertyDto>(property));
         }
 
+        /// <summary>
+        /// Creates a new property with optional multiple images
+        /// First image will be used as thumbnail
+        /// </summary>
         [HttpPost]
         [Authorize(Roles = "Landlord")]
         [Consumes("multipart/form-data")]
@@ -59,12 +63,19 @@ namespace HouseRentAPI.Controllers
             var property = _mapper.Map<Property>(createDto);
             property.LandlordId = GetCurrentUserId();
 
-            var createdProperty = await _propertyService.CreatePropertyAsync(property);
+            // Extract images from DTO
+            var images = createDto.Images?.Where(img => img != null && img.Length > 0).ToList();
+
+            var createdProperty = await _propertyService.CreatePropertyAsync(property, images);
             return CreatedAtAction(nameof(GetPropertyById),
                 new { id = createdProperty.PropertyId },
                 _mapper.Map<PropertyDto>(createdProperty));
         }
 
+        /// <summary>
+        /// Updates an existing property with optional additional images
+        /// Existing images are preserved unless explicitly deleted
+        /// </summary>
         [HttpPut("{id}")]
         [Authorize(Roles = "Landlord,Admin")]
         [Consumes("multipart/form-data")]
@@ -77,7 +88,11 @@ namespace HouseRentAPI.Controllers
             if (property == null) return NotFound();
 
             _mapper.Map(updateDto, property);
-            await _propertyService.UpdatePropertyAsync(property);
+            
+            // Extract images from DTO
+            var images = updateDto.Images?.Where(img => img != null && img.Length > 0).ToList();
+            
+            await _propertyService.UpdatePropertyAsync(property, images);
 
             return NoContent();
         }
@@ -93,6 +108,9 @@ namespace HouseRentAPI.Controllers
             return NoContent();
         }
 
+        /// <summary>
+        /// Uploads additional images to an existing property
+        /// </summary>
         [HttpPost("{id}/images")]
         [Authorize(Roles = "Landlord,Admin")]
         public async Task<IActionResult> UploadPropertyImages(int id, List<IFormFile> images)
@@ -100,9 +118,30 @@ namespace HouseRentAPI.Controllers
             if (!await _propertyService.IsOwner(id, GetCurrentUserId()) && !User.IsInRole("Admin"))
                 return Forbid();
 
+            if (images == null || !images.Any())
+                return BadRequest("No images provided");
+
             await _propertyService.AddPropertyImagesAsync(id, images);
 
             return Ok();
+        }
+
+        /// <summary>
+        /// Deletes a specific property image by image ID
+        /// </summary>
+        [HttpDelete("images/{imageId}")]
+        [Authorize(Roles = "Landlord,Admin")]
+        public async Task<IActionResult> DeletePropertyImage(int imageId)
+        {
+            try
+            {
+                await _propertyService.DeletePropertyImageAsync(imageId, GetCurrentUserId(), User.IsInRole("Admin"));
+                return NoContent();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Forbid();
+            }
         }
 
         [HttpGet("search")]
