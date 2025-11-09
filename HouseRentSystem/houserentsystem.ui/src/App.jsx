@@ -8,6 +8,8 @@ import AdminDashboard from './pages/AdminDashboard';
 import CreateMaintenanceRequest from './pages/CreateMaintenanceRequest';
 import TenantLeaseManagement from './pages/TenantLeaseManagement';
 import LandlordLeaseManagement from './pages/LandlordLeaseManagement';
+import TenantPaymentManagement from './pages/TenantPaymentManagement';
+import LandlordPaymentManagement from './pages/LandlordPaymentManagement';
 import CreateLease from './pages/CreateLease';
 import PropertyList from './components/PropertyList';
 import PropertyDetails from './components/PropertyDetails';
@@ -33,6 +35,8 @@ function App() {
         <Route path="/maintenance/request" element={<CreateMaintenanceRequest />} />
         <Route path="/tenant-lease-management" element={<TenantLeaseManagement />} />
         <Route path="/landlord-lease-management" element={<LandlordLeaseManagement />} />
+        <Route path="/tenant-payment-management" element={<TenantPaymentManagement />} />
+        <Route path="/landlord-payment-management" element={<LandlordPaymentManagement />} />
         <Route path="/lease/create" element={<CreateLease />} />
       </Routes>
     </Router>

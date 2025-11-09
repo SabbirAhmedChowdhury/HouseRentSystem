@@ -10,6 +10,7 @@ const TenantDashboard = () => {
     const { user } = useContext(AuthContext);
     const [lease, setLease] = useState(null);
     const [requests, setRequests] = useState([]);
+    const [pendingPayments, setPendingPayments] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
 
@@ -40,6 +41,10 @@ const TenantDashboard = () => {
             // Fetch maintenance requests
             const reqRes = await api.get(`/maintenance/tenant/${user.userId}`).catch(() => ({ data: [] }));
             setRequests(Array.isArray(reqRes.data) ? reqRes.data : []);
+
+            // Fetch pending payments
+            const pendingRes = await api.get(`/payments/tenant/${user.userId}/pending`).catch(() => ({ data: [] }));
+            setPendingPayments(Array.isArray(pendingRes.data) ? pendingRes.data : []);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to load dashboard');
         } finally {
@@ -120,6 +125,10 @@ const TenantDashboard = () => {
                                 <h5 className="mb-0">Quick Actions</h5>
                             </div>
                             <div className="card-body d-grid gap-2">
+                                <Link to="/tenant-payment-management" className="btn btn-success">
+                                    <i className="bi bi-cash-coin me-1"></i>
+                                    Manage Payments
+                                </Link>
                                 <Link to="/tenant-lease-management" className="btn btn-primary">
                                     <i className="bi bi-file-earmark-text me-1"></i>
                                     Manage Leases
@@ -140,6 +149,42 @@ const TenantDashboard = () => {
                         </div>
                     </div>
                 </div>
+
+                {/* Pending Payments Section */}
+                {pendingPayments.length > 0 && (
+                    <div className="card border-0 shadow-lg mb-5">
+                        <div className="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
+                            <h5 className="mb-0">
+                                <i className="bi bi-exclamation-triangle me-2"></i>
+                                Pending Payments ({pendingPayments.length})
+                            </h5>
+                            <Link to="/tenant-payment-management" className="btn btn-sm btn-light">
+                                View All
+                            </Link>
+                        </div>
+                        <div className="card-body p-0">
+                            <div className="list-group list-group-flush">
+                                {pendingPayments.slice(0, 3).map((payment) => (
+                                    <div
+                                        key={payment.paymentId}
+                                        className="list-group-item d-flex justify-content-between align-items-center"
+                                    >
+                                        <div>
+                                            <strong>BDT {payment.amountPaid?.toLocaleString() || '0'}</strong>
+                                            <br />
+                                            <small className="text-muted">
+                                                Due: {new Date(payment.dueDate).toLocaleDateString()} - {payment.lease?.property?.address || 'N/A'}
+                                            </small>
+                                        </div>
+                                        <span className="badge bg-warning">
+                                            {new Date(payment.dueDate) < new Date() ? 'Overdue' : 'Pending'}
+                                        </span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                )}
 
                 {/* Maintenance Requests */}
                 <div className="card border-0 shadow-lg">

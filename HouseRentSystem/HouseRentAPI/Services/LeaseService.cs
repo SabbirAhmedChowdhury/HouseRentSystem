@@ -18,14 +18,21 @@ namespace HouseRentAPI.Services
         private readonly IPdfService _pdfService;
         private readonly IConfiguration _configuration;
         private readonly IWebHostEnvironment _env;
+        private readonly IPaymentService _paymentService;
         private readonly string _baseStoragePath;
 
-        public LeaseService(IUnitOfWork unitOfWork, IPdfService pdfService, IConfiguration configuration, IWebHostEnvironment env)
+        public LeaseService(
+            IUnitOfWork unitOfWork, 
+            IPdfService pdfService, 
+            IConfiguration configuration, 
+            IWebHostEnvironment env,
+            IPaymentService paymentService)
         {
             _unitOfWork = unitOfWork;
             _pdfService = pdfService;
             _configuration = configuration;
             _env = env;
+            _paymentService = paymentService;
 
             // Get base storage path from config or use default
             _baseStoragePath = _configuration["FileStorage:BasePath"] ?? Path.Combine(_env.ContentRootPath, "FileStorage");
@@ -95,6 +102,20 @@ namespace HouseRentAPI.Services
 
             await leaseRepo.AddAsync(lease);
             await _unitOfWork.SaveChangesAsync();
+
+            // Create security deposit payment record if property has security deposit
+            if (property.SecurityDeposit > 0)
+            {
+                try
+                {
+                    await _paymentService.CreateSecurityDepositPaymentAsync(lease.LeaseId, property.SecurityDeposit);
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't fail lease creation if security deposit payment creation fails
+                    // This allows lease to be created even if payment service has issues
+                }
+            }
 
             return lease;
         }

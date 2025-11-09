@@ -222,6 +222,13 @@ const LandlordDashboard = () => {
                 {/* Action Buttons */}
                 <div className="text-end mb-4 d-flex gap-2 justify-content-end">
                     <Link
+                        to="/landlord-payment-management"
+                        className="btn btn-outline-success btn-lg"
+                    >
+                        <i className="bi bi-cash-coin me-2"></i>
+                        Manage Payments
+                    </Link>
+                    <Link
                         to="/landlord-lease-management"
                         className="btn btn-outline-primary btn-lg"
                     >
@@ -410,11 +417,18 @@ const LandlordDashboard = () => {
 
                 {/* Overdue Payments Section */}
                 <div className="card border-0 shadow-lg mb-5">
-                    <div className="card-header bg-primary text-white">
+                    <div className="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                         <h5 className="mb-0">
                             <i className="bi bi-exclamation-triangle me-2"></i>
                             Overdue Payments
                         </h5>
+                        <Link
+                            to="/landlord-payment-management"
+                            className="btn btn-sm btn-light"
+                        >
+                            <i className="bi bi-arrow-right me-1"></i>
+                            View All Payments
+                        </Link>
                     </div>
                     <div className="card-body p-0">
                         {overduePayments.length === 0 ? (
@@ -427,7 +441,7 @@ const LandlordDashboard = () => {
                                 <table className="table table-hover align-middle mb-0">
                                     <thead className="table-light">
                                         <tr>
-                                            <th>Lease ID</th>
+                                            <th>Property</th>
                                             <th>Tenant</th>
                                             <th>Due Date</th>
                                             <th>Amount</th>
@@ -439,7 +453,11 @@ const LandlordDashboard = () => {
                                     <tbody>
                                         {overduePayments.map((p) => (
                                             <tr key={p.paymentId}>
-                                                <td>{p.leaseId}</td>
+                                                <td>
+                                                    <strong>{p.lease?.property?.address || 'N/A'}</strong>
+                                                    <br />
+                                                    <small className="text-muted">{p.lease?.property?.city || ''}</small>
+                                                </td>
                                                 <td>{p.lease?.tenant?.fullName || p.lease?.tenantId || 'N/A'}</td>
                                                 <td>{new Date(p.dueDate).toLocaleDateString()}</td>
                                                 <td>BDT {p.amountPaid?.toLocaleString() || '0'}</td>
@@ -455,15 +473,17 @@ const LandlordDashboard = () => {
                                                             className="btn btn-sm btn-outline-primary"
                                                             onClick={() => handleVerifyPayment(p.paymentId)}
                                                             disabled={p.status !== 'Pending'}
+                                                            title="Verify Payment"
                                                         >
-                                                            Verify
+                                                            <i className="bi bi-check-circle"></i>
                                                         </button>
                                                         <button
                                                             className="btn btn-sm btn-outline-success"
                                                             onClick={() => handleUpdatePaymentStatus(p.paymentId, 'Paid')}
                                                             disabled={p.status === 'Paid'}
+                                                            title="Mark as Paid"
                                                         >
-                                                            Mark Paid
+                                                            <i className="bi bi-check"></i>
                                                         </button>
                                                     </div>
                                                 </td>

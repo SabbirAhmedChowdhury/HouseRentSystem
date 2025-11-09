@@ -17,6 +17,7 @@ namespace HouseRentAPI.Models
         public required string PaymentMethod { get; set; }
         public string? PaymentSlipPath { get; set; } // Uploaded slip path
         public PaymentStatus Status { get; set; } = PaymentStatus.Pending; // Paid/Unpaid
+        public PaymentType PaymentType { get; set; } = PaymentType.Rent; // Type of payment (Rent or SecurityDeposit)
         public DateTime CreatedAt { get; internal set; }
 
         // Foreign Keys

@@ -25,13 +25,20 @@ namespace HouseRentAPI.Services
             _serviceProvider = serviceProvider;
         }
 
-        public async Task<RentPayment> CreatePaymentRecordAsync(int leaseId, decimal amount, DateTime dueDate)
+        /// <summary>
+        /// Creates a payment record (rent or security deposit)
+        /// </summary>
+        /// <param name="leaseId">ID of the lease</param>
+        /// <param name="amount">Payment amount</param>
+        /// <param name="dueDate">Due date for the payment</param>
+        /// <param name="paymentType">Type of payment (Rent or SecurityDeposit)</param>
+        /// <returns>Created payment record</returns>
+        public async Task<RentPayment> CreatePaymentRecordAsync(int leaseId, decimal amount, DateTime dueDate, PaymentType paymentType = PaymentType.Rent)
         {
             var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
             var leaseRepo = _unitOfWork.GetRepository<Lease>();
 
             var lease = await leaseRepo.GetByIdAsync(leaseId);
-            //if (lease == null) throw new KeyNotFoundException("Lease not found");
             if (lease == null) throw new NotFoundException(nameof(Lease), leaseId);
 
             var payment = new RentPayment
@@ -40,6 +47,7 @@ namespace HouseRentAPI.Services
                 DueDate = dueDate,
                 AmountPaid = amount,
                 Status = PaymentStatus.Pending,
+                PaymentType = paymentType,
                 CreatedAt = DateTime.Now,
                 PaymentMethod = "Unspecified"
             };
@@ -47,10 +55,31 @@ namespace HouseRentAPI.Services
             await paymentRepo.AddAsync(payment);
             await _unitOfWork.SaveChangesAsync();
 
-            // Schedule reminder 3 days before due date
-            ScheduleReminder(payment.PaymentId, dueDate.AddDays(-3));
+            // Schedule reminder 3 days before due date (only for rent payments)
+            if (paymentType == PaymentType.Rent)
+            {
+                ScheduleReminder(payment.PaymentId, dueDate.AddDays(-3));
+            }
 
             return payment;
+        }
+        
+        /// <summary>
+        /// Creates a security deposit payment record when a lease is created
+        /// Security deposit is typically due on the lease start date
+        /// </summary>
+        /// <param name="leaseId">ID of the lease</param>
+        /// <param name="amount">Security deposit amount</param>
+        /// <returns>Created security deposit payment record</returns>
+        public async Task<RentPayment> CreateSecurityDepositPaymentAsync(int leaseId, decimal amount)
+        {
+            var leaseRepo = _unitOfWork.GetRepository<Lease>();
+            var lease = await leaseRepo.GetByIdAsync(leaseId);
+            
+            if (lease == null) throw new NotFoundException(nameof(Lease), leaseId);
+            
+            // Security deposit is due on the lease start date
+            return await CreatePaymentRecordAsync(leaseId, amount, lease.StartDate, PaymentType.SecurityDeposit);
         }
 
         public async Task UpdatePaymentStatusAsync(int paymentId, PaymentStatus status)
@@ -242,6 +271,160 @@ namespace HouseRentAPI.Services
                         .ThenInclude(l => l.Tenant)
                     .Include(p => p.Lease)
                         .ThenInclude(l => l.Property)
+            );
+        }
+
+        /// <summary>
+        /// Gets all payments for properties owned by a specific landlord
+        /// Includes lease, tenant, and property information
+        /// </summary>
+        /// <param name="landlordId">ID of the landlord</param>
+        /// <returns>Collection of payments for the landlord's properties</returns>
+        public async Task<IEnumerable<RentPayment>> GetPaymentsByLandlordAsync(int landlordId)
+        {
+            var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
+
+            // First, get all payments with includes, then filter by landlord
+            var allPayments = await paymentRepo.FindAsync(
+                p => true, // Get all payments first
+                query => query
+                    .Include(p => p.Lease)
+                        .ThenInclude(l => l.Tenant)
+                    .Include(p => p.Lease)
+                        .ThenInclude(l => l.Property)
+                            .ThenInclude(prop => prop.Landlord)
+            );
+
+            // Filter by landlord ID after loading related data
+            return allPayments.Where(p => p.Lease?.Property?.LandlordId == landlordId);
+        }
+
+        /// <summary>
+        /// Gets all pending payments for a specific tenant
+        /// Returns payments with Pending status for the tenant's leases
+        /// </summary>
+        /// <param name="tenantId">ID of the tenant</param>
+        /// <returns>Collection of pending payments for the tenant</returns>
+        public async Task<IEnumerable<RentPayment>> GetPendingPaymentsByTenantAsync(int tenantId)
+        {
+            var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
+
+            // Get all pending payments with includes, then filter by tenant
+            var pendingPayments = await paymentRepo.FindAsync(
+                p => p.Status == PaymentStatus.Pending,
+                query => query
+                    .Include(p => p.Lease)
+                        .ThenInclude(l => l.Tenant)
+                    .Include(p => p.Lease)
+                        .ThenInclude(l => l.Property)
+            );
+
+            // Filter by tenant ID after loading related data
+            return pendingPayments.Where(p => p.Lease?.TenantId == tenantId);
+        }
+
+        /// <summary>
+        /// Generates monthly rent payment records for all active leases
+        /// Checks for existing payments and creates new ones for upcoming months
+        /// This method should be called by a background service daily or monthly
+        /// </summary>
+        /// <returns>Number of payment records created</returns>
+        public async Task<int> GenerateMonthlyRentPaymentsAsync()
+        {
+            var leaseRepo = _unitOfWork.GetRepository<Lease>();
+            var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
+            
+            // Get all active leases with their property information
+            var activeLeases = await leaseRepo.FindAsync(
+                l => l.IsActive,
+                l => l.Property
+            );
+            
+            int createdCount = 0;
+            var now = DateTime.Now;
+            var nextMonth = new DateTime(now.Year, now.Month, 1).AddMonths(1);
+            
+            foreach (var lease in activeLeases)
+            {
+                // Skip if lease hasn't started yet
+                if (lease.StartDate > nextMonth)
+                    continue;
+                
+                // Skip if lease has ended (for leases with end dates)
+                if (lease.EndDate.HasValue && lease.EndDate.Value < nextMonth)
+                    continue;
+                
+                // Check if payment for next month already exists
+                var existingPayment = await paymentRepo.FirstOrDefaultAsync(
+                    p => p.LeaseId == lease.LeaseId &&
+                         p.PaymentType == PaymentType.Rent &&
+                         p.DueDate.Year == nextMonth.Year &&
+                         p.DueDate.Month == nextMonth.Month
+                );
+                
+                // Create payment if it doesn't exist
+                if (existingPayment == null)
+                {
+                    // Set due date to the 1st of next month
+                    var dueDate = new DateTime(nextMonth.Year, nextMonth.Month, 1);
+                    
+                    await CreatePaymentRecordAsync(
+                        lease.LeaseId,
+                        lease.MonthlyRent,
+                        dueDate,
+                        PaymentType.Rent
+                    );
+                    createdCount++;
+                }
+            }
+            
+            return createdCount;
+        }
+
+        /// <summary>
+        /// Generates monthly rent payment for a specific active lease
+        /// Creates payment for the next month if it doesn't exist
+        /// </summary>
+        /// <param name="leaseId">ID of the lease</param>
+        /// <returns>Created payment record or null if no payment was needed</returns>
+        public async Task<RentPayment?> GenerateRentPaymentForLeaseAsync(int leaseId)
+        {
+            var leaseRepo = _unitOfWork.GetRepository<Lease>();
+            var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
+            
+            var lease = await leaseRepo.GetByIdAsync(l => l.LeaseId == leaseId, l => l.Property);
+            if (lease == null || !lease.IsActive)
+                return null;
+            
+            var now = DateTime.Now;
+            var nextMonth = new DateTime(now.Year, now.Month, 1).AddMonths(1);
+            
+            // Skip if lease hasn't started yet
+            if (lease.StartDate > nextMonth)
+                return null;
+            
+            // Skip if lease has ended
+            if (lease.EndDate.HasValue && lease.EndDate.Value < nextMonth)
+                return null;
+            
+            // Check if payment for next month already exists
+            var existingPayment = await paymentRepo.FirstOrDefaultAsync(
+                p => p.LeaseId == leaseId &&
+                     p.PaymentType == PaymentType.Rent &&
+                     p.DueDate.Year == nextMonth.Year &&
+                     p.DueDate.Month == nextMonth.Month
+            );
+            
+            if (existingPayment != null)
+                return null;
+            
+            // Create payment for next month
+            var dueDate = new DateTime(nextMonth.Year, nextMonth.Month, 1);
+            return await CreatePaymentRecordAsync(
+                leaseId,
+                lease.MonthlyRent,
+                dueDate,
+                PaymentType.Rent
             );
         }
     }

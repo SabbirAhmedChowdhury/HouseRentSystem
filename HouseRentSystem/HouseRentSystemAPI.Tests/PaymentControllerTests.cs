@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HouseRentAPI.Controllers;
 using HouseRentAPI.DTOs;
+using HouseRentAPI.Enums;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
 using Microsoft.AspNetCore.Http;
@@ -42,7 +43,7 @@ namespace HouseRentSystemAPI.Tests
             var responseDto = new PaymentResponseDTO { PaymentId = 1 };
 
             _mockMapper.Setup(m => m.Map<RentPayment>(createDto)).Returns(payment);
-            _mockService.Setup(s => s.CreatePaymentRecordAsync(1, 15000, createDto.DueDate))
+            _mockService.Setup(s => s.CreatePaymentRecordAsync(1, 15000, createDto.DueDate, PaymentType.Rent))
                 .ReturnsAsync(payment);
             _mockMapper.Setup(m => m.Map<PaymentResponseDTO>(payment)).Returns(responseDto);
 

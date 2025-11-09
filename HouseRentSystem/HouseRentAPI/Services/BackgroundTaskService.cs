@@ -29,7 +29,15 @@ namespace HouseRentAPI.Services
                 using var scope = _serviceProvider.CreateScope();
                 var paymentService = scope.ServiceProvider.GetRequiredService<IPaymentService>();
 
-                // 1. Send reminders for payments due in 3 days
+                // 1. Generate monthly rent payments for all active leases
+                // This runs daily to ensure payments are created for upcoming months
+                var createdPayments = await paymentService.GenerateMonthlyRentPaymentsAsync();
+                if (createdPayments > 0)
+                {
+                    _logger.LogInformation($"Generated {createdPayments} new monthly rent payment records");
+                }
+
+                // 2. Send reminders for payments due in 3 days
                 var reminderDate = DateTime.Now.AddDays(3).Date;
                 var payments = await paymentService.GetPaymentsByDueDateAsync(reminderDate);
 
@@ -40,7 +48,7 @@ namespace HouseRentAPI.Services
 
                 _logger.LogInformation($"Sent {payments.Count()} rent reminders for {reminderDate:yyyy-MM-dd}");
 
-                // 2. Check for overdue payments
+                // 3. Check for overdue payments
                 var today = DateTime.Now.Date;
                 var overduePayments = await paymentService.GetPaymentsByDueDateAsync(today.AddDays(-1));
 

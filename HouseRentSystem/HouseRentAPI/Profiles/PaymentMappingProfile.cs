@@ -11,6 +11,7 @@ namespace HouseRentAPI.Profiles
             // Request DTO to Entity
             CreateMap<CreatePaymentRecordDTO, RentPayment>()
                 .ForMember(dest => dest.AmountPaid, opt => opt.MapFrom(src => src.Amount))
+                .ForMember(dest => dest.PaymentType, opt => opt.MapFrom(src => src.PaymentType))
                 .ForMember(dest => dest.Status, opt => opt.Ignore())
                 .ForMember(dest => dest.PaymentDate, opt => opt.Ignore())
                 .ForMember(dest => dest.PaymentMethod, opt => opt.Ignore())
