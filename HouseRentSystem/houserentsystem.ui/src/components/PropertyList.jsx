@@ -76,7 +76,7 @@ const PropertyList = () => {
     };
 
     return (
-        <>
+        <Layout>
             <div className="container py-5">
                 {/* Hero Section */}
                 <div className="text-center mb-5">
@@ -269,7 +269,7 @@ const PropertyList = () => {
                     </nav>
                 )}
             </div>
-        </>
+        </Layout>
     );
 };
 
