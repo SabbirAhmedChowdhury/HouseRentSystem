@@ -52,13 +52,45 @@ const TenantDashboard = () => {
         }
     };
 
+    //const getStatusBadge = (status) => {
+    //    const map = {
+    //        Pending: 'bg-warning',
+    //        InProgress: 'bg-info',
+    //        Resolved: 'bg-success',
+    //    };
+    //    return `badge ${map[status] || 'bg-secondary'}`;
+    //};
+
+    /**
+ * Converts maintenanceStatus enum/number to text
+ * @param {string|number} status - Maintenance Status(can be enum value or number)
+ * @returns {string} Status text
+ */
+    const getStatusText = (status) => {
+        if (typeof status === 'number') {
+            const statusMap = {
+                0: 'Pending',
+                1: 'InProgress',
+                2: 'Resolved'
+            };
+            return statusMap[status] || 'Unknown';
+        }
+        return status || 'Unknown';
+    };
+
+    /**
+     * Gets the status badge class based on Maintenance Status
+     * @param {string|number} status - Maintenance Status
+     * @returns {string} Badge class name
+     */
     const getStatusBadge = (status) => {
+        const statusText = getStatusText(status);
         const map = {
             Pending: 'bg-warning',
             InProgress: 'bg-info',
             Resolved: 'bg-success',
         };
-        return `badge ${map[status] || 'bg-secondary'}`;
+        return `badge ${map[statusText] || 'bg-secondary'}`;
     };
 
     return (
@@ -82,7 +114,7 @@ const TenantDashboard = () => {
                                 {lease ? (
                                     <div className="row">
                                         <div className="col-md-6">
-                                            <p><strong>Property ID:</strong> {lease.propertyId}</p>
+                                            <p><strong>Property:</strong> {lease.property?.address}</p>
                                             <p><strong>Rent:</strong> BDT {lease.monthlyRent?.toLocaleString() || 'N/A'}/month</p>
                                             <p><strong>Start Date:</strong> {new Date(lease.startDate).toLocaleDateString()}</p>
                                             <p><strong>End Date:</strong> {lease.endDate ? new Date(lease.endDate).toLocaleDateString() : 'Open-ended'}</p>
@@ -219,7 +251,7 @@ const TenantDashboard = () => {
                                             </small>
                                         </div>
                                         <span className={getStatusBadge(r.status)}>
-                                            {r.status}
+                                            {getStatusText(r.status)}
                                         </span>
                                     </div>
                                 ))}

@@ -86,7 +86,8 @@ namespace HouseRentAPI.Services
             var requestRepo = _unitOfWork.GetRepository<MaintenanceRequest>();
             return await requestRepo.FindAsync(
                 r => r.PropertyId == propertyId,
-                r => r.Tenant
+                r => r.Tenant,
+                r => r.Property
             );
         }
 

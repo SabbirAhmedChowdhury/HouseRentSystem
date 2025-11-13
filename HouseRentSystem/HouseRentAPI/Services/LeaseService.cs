@@ -241,7 +241,8 @@ namespace HouseRentAPI.Services
             var leaseRepo = _unitOfWork.GetRepository<Lease>();
             return await leaseRepo.FindAsync(
                 l => l.PropertyId == propertyId,
-                l => l.Tenant
+                l => l.Tenant,
+                l => l.Property
             );
         }
 

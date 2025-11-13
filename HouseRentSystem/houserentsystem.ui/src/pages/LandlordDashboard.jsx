@@ -81,6 +81,7 @@ const LandlordDashboard = () => {
                     // Property might not have maintenance requests
                 }
             }
+            console.log(allRequests);
             setMaintenanceRequests(allRequests);
         } catch (err) {
             setError(err.response?.data?.message || 'Failed to load dashboard');
@@ -159,6 +160,38 @@ const LandlordDashboard = () => {
         } catch (err) {
             alert(err.response?.data?.message || 'Failed to update payment status');
         }
+    };
+
+    /**
+     * Converts maintenanceStatus enum/number to text
+     * @param {string|number} status - Maintenance Status(can be enum value or number)
+     * @returns {string} Status text
+     */
+    const getStatusText = (status) => {
+        if (typeof status === 'number') {
+            const statusMap = {
+                0: 'Pending',
+                1: 'InProgress',
+                2: 'Resolved'
+            };
+            return statusMap[status] || 'Unknown';
+        }
+        return status || 'Unknown';
+    };
+
+    /**
+     * Gets the status badge class based on Maintenance Status
+     * @param {string|number} status - Maintenance Status
+     * @returns {string} Badge class name
+     */
+    const getStatusBadge = (status) => {
+        const statusText = getStatusText(status);
+        const map = {
+            Pending: 'bg-warning',
+            InProgress: 'bg-info',
+            Resolved: 'bg-success',            
+        };
+        return `badge ${map[statusText] || 'bg-secondary'}`;
     };
 
     if (loading) {
@@ -380,8 +413,8 @@ const LandlordDashboard = () => {
                                     <tbody>
                                         {leases.map((l) => (
                                             <tr key={l.leaseId}>
-                                                <td>{properties.find(p => p.propertyId === l.propertyId)?.address || `Property ${l.propertyId}`}</td>
-                                                <td>Tenant #{l.tenantId}</td>
+                                                <td>{l.property?.address}, {l.property?.city} </td> {/*{properties.find(p => p.propertyId === l.propertyId)?.address || `Property ${l.propertyId}`}*/}
+                                                <td>{l.tenant?.fullName ?? 'Tenant #' + l.tenantId}</td>
                                                 <td>{new Date(l.startDate).toLocaleDateString()}</td>
                                                 <td>{l.endDate ? new Date(l.endDate).toLocaleDateString() : 'Open-ended'}</td>
                                                 <td>BDT {l.monthlyRent?.toLocaleString() || '0'}</td>
@@ -532,28 +565,32 @@ const LandlordDashboard = () => {
                                                 <td>{r.description}</td>
                                                 <td>{new Date(r.requestDate).toLocaleDateString()}</td>
                                                 <td>
-                                                    <span
-                                                        className={`badge ${r.status === 'Pending' ? 'bg-warning' :
-                                                            r.status === 'InProgress' ? 'bg-info' :
-                                                                r.status === 'Resolved' ? 'bg-success' : 'bg-secondary'
-                                                            }`}
-                                                    >
-                                                        {r.status}
+                                                    {/*<span*/}
+                                                    {/*    className={`badge ${r.Status === 'Pending' ? 'bg-warning' :*/}
+                                                    {/*        r.status === 'InProgress' ? 'bg-info' :*/}
+                                                    {/*            r.status === 'Resolved' ? 'bg-success' : 'bg-secondary'*/}
+                                                    {/*        }`}*/}
+                                                    {/*>*/}
+                                                    {/*    {r.status}*/}
+                                                    {/*</span>*/}
+
+                                                    <span className={getStatusBadge(r.status)}>
+                                                        {getStatusText(r.status)}
                                                     </span>
                                                 </td>
-                                                <td>
+                                                <td>                                                    
                                                     <div className="btn-group" role="group">
                                                         <button
                                                             className="btn btn-sm btn-outline-primary"
                                                             onClick={() => handleStatusUpdate(r.requestId, 'InProgress')}
-                                                            disabled={r.status !== 'Pending'}
+                                                            disabled={getStatusText(r.status) !== 'Pending'}
                                                         >
                                                             Start
                                                         </button>
                                                         <button
                                                             className="btn btn-sm btn-outline-success"
                                                             onClick={() => handleStatusUpdate(r.requestId, 'Resolved')}
-                                                            disabled={r.status === 'Resolved'}
+                                                            disabled={getStatusText(r.status) === 'Resolved'}
                                                         >
                                                             Resolve
                                                         </button>

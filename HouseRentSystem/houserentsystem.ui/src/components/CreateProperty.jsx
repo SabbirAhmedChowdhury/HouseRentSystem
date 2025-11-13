@@ -172,7 +172,7 @@ const CreateProperty = () => {
                                                 className={`form-control ${errors.address ? 'is-invalid' : ''}`}
                                                 value={form.address}
                                                 onChange={handleChange}
-                                                placeholder="123 Main St, Apt 4B"
+                                                placeholder="Flat B#1, House#164, Road#03..."
                                             />
                                             {errors.address && <div className="invalid-feedback">{errors.address}</div>}
                                         </div>
@@ -265,7 +265,7 @@ const CreateProperty = () => {
                                                 rows="4"
                                                 value={form.description}
                                                 onChange={handleChange}
-                                                placeholder="Spacious 3BHK with balcony..."
+                                                placeholder="Spacious balcony..."
                                             />
                                         </div>
 
