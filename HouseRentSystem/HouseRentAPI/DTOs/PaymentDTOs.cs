@@ -93,6 +93,7 @@ namespace HouseRentAPI.DTOs
         public decimal AmountPaid { get; set; }
         public PaymentStatus Status { get; set; }
         public string PropertyAddress { get; set; }
+        public PaymentType PaymentType { get; set; }
     }
 
     // Custom validation attribute for future dates

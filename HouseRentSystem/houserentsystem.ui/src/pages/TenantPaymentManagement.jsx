@@ -277,10 +277,10 @@ const TenantPaymentManagement = () => {
                                             <th>Payment Date</th>
                                             <th>Amount</th>
                                             <th>Status</th>
-                                            <th>Actions</th>
+                                            {/*<th>Actions</th>*/}
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                        <tbody>
                                         {filteredPayments.map((payment) => (
                                             <tr key={payment.paymentId} className={isOverdue(payment) ? 'table-danger' : ''}>
                                                 <td>
@@ -303,29 +303,29 @@ const TenantPaymentManagement = () => {
                                                         {getStatusText(payment.status)}
                                                     </span>
                                                 </td>
-                                                <td>
-                                                    {getStatusText(payment.status) === 'Pending' && (
-                                                        <button
-                                                            className="btn btn-sm btn-primary"
-                                                            onClick={() => setSelectedPayment(payment)}
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#uploadSlipModal"
-                                                        >
-                                                            <i className="bi bi-upload me-1"></i>
-                                                            Upload Slip
-                                                        </button>
-                                                    )}
-                                                    {payment.paymentSlipPath && (
-                                                        <a
-                                                            href={payment.paymentSlipPath}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="btn btn-sm btn-outline-info ms-1"
-                                                        >
-                                                            <i className="bi bi-file-earmark-pdf"></i>
-                                                        </a>
-                                                    )}
-                                                </td>
+                                                {/*<td>*/}
+                                                {/*    {getStatusText(payment.status) === 'Pending' && (*/}
+                                                {/*        <button*/}
+                                                {/*            className="btn btn-sm btn-primary"*/}
+                                                {/*            onClick={() => setSelectedPayment(payment)}*/}
+                                                {/*            data-bs-toggle="modal"*/}
+                                                {/*            data-bs-target="#uploadSlipModal"*/}
+                                                {/*        >*/}
+                                                {/*            <i className="bi bi-upload me-1"></i>*/}
+                                                {/*            Upload Slip*/}
+                                                {/*        </button>*/}
+                                                {/*    )}*/}
+                                                {/*    {payment.paymentSlipPath && (*/}
+                                                {/*        <a*/}
+                                                {/*            href={payment.paymentSlipPath}*/}
+                                                {/*            target="_blank"*/}
+                                                {/*            rel="noopener noreferrer"*/}
+                                                {/*            className="btn btn-sm btn-outline-info ms-1"*/}
+                                                {/*        >*/}
+                                                {/*            <i className="bi bi-file-earmark-pdf"></i>*/}
+                                                {/*        </a>*/}
+                                                {/*    )}*/}
+                                                {/*</td>*/}
                                             </tr>
                                         ))}
                                     </tbody>

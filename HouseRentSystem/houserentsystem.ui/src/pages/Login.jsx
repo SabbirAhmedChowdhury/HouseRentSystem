@@ -56,7 +56,7 @@ const Login = () => {
                     <div className="col-md-5 col-lg-4">
                         <div className="card border-0 shadow-lg">
                             <div className="card-body p-5">
-                                <h3 className="text-center mb-4 text-primary">Sign In</h3>
+                                <h3 className="text-center mb-4 text-primary">Sign In to HRMS</h3>
 
                                 {error && (
                                     <div className="alert alert-danger small">{error}</div>
