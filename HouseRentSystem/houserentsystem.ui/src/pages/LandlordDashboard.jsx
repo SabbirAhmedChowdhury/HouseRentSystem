@@ -107,6 +107,9 @@ const LandlordDashboard = () => {
     };
 
     const handleStatusUpdate = async (requestId, newStatus) => {
+        if (!window.confirm(`Are you sure you want to mark this maintenance request as ${getStatusText(newStatus)}?`)) {
+            return;
+        }
         try {
             await api.put(`/maintenance/${requestId}/status`, { status: newStatus });
             fetchDashboardData();
@@ -513,7 +516,7 @@ const LandlordDashboard = () => {
                                                         </button>
                                                         <button
                                                             className="btn btn-sm btn-outline-success"
-                                                            onClick={() => handleUpdatePaymentStatus(p.paymentId, 'Paid')}
+                                                            onClick={() => handleUpdatePaymentStatus(p.paymentId, 1)} //1 means Paid
                                                             disabled={p.status === 'Paid'}
                                                             title="Mark as Paid"
                                                         >
@@ -582,14 +585,14 @@ const LandlordDashboard = () => {
                                                     <div className="btn-group" role="group">
                                                         <button
                                                             className="btn btn-sm btn-outline-primary"
-                                                            onClick={() => handleStatusUpdate(r.requestId, 'InProgress')}
+                                                            onClick={() => handleStatusUpdate(r.requestId, 1)} //1 means InProgress
                                                             disabled={getStatusText(r.status) !== 'Pending'}
                                                         >
                                                             Start
                                                         </button>
                                                         <button
                                                             className="btn btn-sm btn-outline-success"
-                                                            onClick={() => handleStatusUpdate(r.requestId, 'Resolved')}
+                                                            onClick={() => handleStatusUpdate(r.requestId, 2)} //2 means Resolved
                                                             disabled={getStatusText(r.status) === 'Resolved'}
                                                         >
                                                             Resolve

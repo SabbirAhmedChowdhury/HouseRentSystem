@@ -75,7 +75,7 @@ const LandlordPaymentManagement = () => {
      * @param {string} newStatus - New status (Paid, Pending, Overdue)
      */
     const handleUpdatePaymentStatus = async (paymentId, newStatus) => {
-        if (!window.confirm(`Are you sure you want to mark this payment as ${newStatus}?`)) {
+        if (!window.confirm(`Are you sure you want to mark this payment as ${getStatusText(newStatus)}?`)) {
             return;
         }
         try {
@@ -301,7 +301,7 @@ const LandlordPaymentManagement = () => {
                                                         )}
                                                         <button
                                                             className="btn btn-sm btn-outline-success"
-                                                            onClick={() => handleUpdatePaymentStatus(payment.paymentId, 'Paid')}
+                                                            onClick={() => handleUpdatePaymentStatus(payment.paymentId, 1)} ////1 means Paid
                                                             disabled={getStatusText(payment.status) === 'Paid'}
                                                             title="Mark as Paid"
                                                         >
@@ -429,7 +429,7 @@ const LandlordPaymentManagement = () => {
                                                         {getStatusText(payment.status) !== 'Paid' && (
                                                             <button
                                                                 className="btn btn-sm btn-outline-success"
-                                                                onClick={() => handleUpdatePaymentStatus(payment.paymentId, 'Paid')}
+                                                                onClick={() => handleUpdatePaymentStatus(payment.paymentId, 1)} //1 means Paid
                                                                 title="Mark as Paid"
                                                             >
                                                                 <i className="bi bi-check"></i>
