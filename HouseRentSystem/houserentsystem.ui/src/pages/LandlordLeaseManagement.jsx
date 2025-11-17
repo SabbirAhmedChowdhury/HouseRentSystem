@@ -276,7 +276,7 @@ const LandlordLeaseManagement = () => {
                                                                 </button>
                                                             )}
                                                         </div>
-                                                        {lease.isActive && (
+                                                        {lease.isActive && lease.endDate && (
                                                             <div className="d-flex gap-1">
                                                                 <input
                                                                     type="date"

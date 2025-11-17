@@ -171,13 +171,13 @@ const TenantLeaseManagement = () => {
                                     <i className="bi bi-house me-1"></i>
                                     View Property
                                 </Link>
-                                <button
-                                    className="btn btn-outline-danger"
-                                    onClick={() => handleEndLease(activeLease.leaseId)}
-                                >
-                                    <i className="bi bi-x-circle me-1"></i>
-                                    End Lease
-                                </button>
+                                {/*<button*/}
+                                {/*    className="btn btn-outline-danger"*/}
+                                {/*    onClick={() => handleEndLease(activeLease.leaseId)}*/}
+                                {/*>*/}
+                                {/*    <i className="bi bi-x-circle me-1"></i>*/}
+                                {/*    End Lease*/}
+                                {/*</button>*/}
                             </div>
                         </div>
                     </div>

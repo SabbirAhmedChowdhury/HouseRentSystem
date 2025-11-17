@@ -8,6 +8,7 @@ import { Link } from 'react-router-dom';
 import api from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import Layout from '../components/Layout';
+import { getImageUrl, getImageUrls } from '../utils/imageUtils';
 
 const LandlordPaymentManagement = () => {
     const { user } = useContext(AuthContext);
@@ -437,7 +438,7 @@ const LandlordPaymentManagement = () => {
                                                         )}
                                                         {payment.paymentSlipPath && (
                                                             <a
-                                                                href={payment.paymentSlipPath}
+                                                                href={getImageUrl(payment.paymentSlipPath)}
                                                                 target="_blank"
                                                                 rel="noopener noreferrer"
                                                                 className="btn btn-sm btn-outline-info"

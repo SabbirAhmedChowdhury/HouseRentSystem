@@ -427,20 +427,25 @@ const LandlordDashboard = () => {
                                                             className="btn btn-sm btn-outline-danger"
                                                             onClick={() => handleEndLease(l.leaseId)}
                                                         >
-                                                            End
+                                                            End Lease
                                                         </button>
-                                                        <input
-                                                            type="date"
-                                                            className="form-control form-control-sm d-inline-block w-auto me-1"
-                                                            value={renewDates[l.leaseId] || ''}
-                                                            onChange={(e) => handleRenewDateChange(l.leaseId, e.target.value)}
-                                                        />
-                                                        <button
-                                                            className="btn btn-sm btn-outline-success"
-                                                            onClick={() => handleRenewLease(l.leaseId)}
-                                                        >
-                                                            Renew
-                                                        </button>
+                                                        {l.endDate && (
+                                                            <>
+                                                                <input
+                                                                    type="date"
+                                                                    className="form-control form-control-sm d-inline-block w-auto me-1"
+                                                                    value={renewDates[l.leaseId] || ''}
+                                                                    onChange={(e) => handleRenewDateChange(l.leaseId, e.target.value)}
+                                                                />
+                                                                <button
+                                                                    className="btn btn-sm btn-outline-success"
+                                                                    onClick={() => handleRenewLease(l.leaseId)}
+                                                                >
+                                                                    Renew
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                        
                                                     </div>
                                                 </td>
                                             </tr>

@@ -480,12 +480,18 @@ const PropertyDetails = () => {
                                                 <p>Terms and Conditions: {lease.termsAndConditions}</p>
                                             )}
                                             <button onClick={handleDownloadDocument} className="btn btn-primary">Download Lease Document</button>
-                                            <div className="mt-3">
-                                                <label className="form-label">New End Date for Renewal</label>
-                                                <input type="date" className="form-control" value={renewDate} onChange={(e) => setRenewDate(e.target.value)} />
-                                                <button onClick={handleRenewLease} className="btn btn-primary mt-2">Renew Lease</button>
-                                            </div>
-                                            <button onClick={handleEndLease} className="btn btn-danger mt-2">End Lease</button>
+                                            {user.role === 'Landlord' && (
+                                                <div>
+                                                    {lease.endDate && (
+                                                        <div className="mt-3">
+                                                            <label className="form-label">New End Date for Renewal</label>
+                                                            <input type="date" className="form-control" value={renewDate} onChange={(e) => setRenewDate(e.target.value)} />
+                                                            <button onClick={handleRenewLease} className="btn btn-primary mt-2">Renew Lease</button>
+                                                        </div>
+                                                    )}
+                                                    <button onClick={handleEndLease} className="btn btn-danger mt-2">End Lease</button>
+                                                </div>
+                                            )}
                                         </div>
                                     ) : (
                                         <p>No current lease for this property.</p>
