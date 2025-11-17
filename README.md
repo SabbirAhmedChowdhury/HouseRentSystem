@@ -2,6 +2,7 @@
 A digital solution to streamline house rent management
 
 #Description
+
 The proliferation of digital technologies has revolutionized various sectors, including real estate management. Traditional house rental management processes are often characterized by inefficiencies, manual record-keeping, and communication gaps between landlords and tenants. This research project presents the design and implementation of a comprehensive web-based House Rent Management System (HRMS) that addresses these challenges through modern software engineering practices.
 
 The system is developed using a three-tier architecture comprising a React-based frontend, an ASP.NET Core Web API backend, and a SQL Server database. The solution provides distinct interfaces for three primary user roles: landlords, tenants, and administrators. Key functionalities include property listing and management, lease agreement generation and tracking, automated payment processing, maintenance request handling, and comprehensive reporting capabilities.
