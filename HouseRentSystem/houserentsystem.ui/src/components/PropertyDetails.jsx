@@ -421,6 +421,17 @@ const PropertyDetails = () => {
                                     <p className="mb-0">{property.landlordName}</p>
                                 </div>
 
+                                <div className="row g-3 mb-4">
+                                    <div className="col-6">
+                                        <h6 className="text-primary">Landlord Email</h6>
+                                        <p className="mb-0">{property.landlordEmail}</p>
+                                    </div>
+                                    <div className="col-6">
+                                        <h6 className="text-primary">Landlord Phone</h6>
+                                        <p className="mb-0">{property.landlordPhone}</p>
+                                    </div>
+                                </div>
+
                                 <hr />
 
                                 <div className="d-flex gap-2">

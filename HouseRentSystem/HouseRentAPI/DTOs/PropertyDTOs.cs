@@ -60,6 +60,8 @@ namespace HouseRentAPI.DTOs
         public List<PropertyImageDto> ImageDetails { get; set; } = new();
         public int LandlordId { get; set; }
         public string LandlordName { get; set; }
+        public string LandlordEmail { get; set; }
+        public string LandlordPhone { get; set; }
     }
 
     /// <summary>

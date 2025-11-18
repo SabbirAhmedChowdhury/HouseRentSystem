@@ -40,7 +40,11 @@ namespace HouseRentAPI.Profiles
                         ImagePath = i.ImagePath
                     }).ToList()))
                 .ForMember(dest => dest.LandlordName,
-                    opt => opt.MapFrom(src => src.Landlord.FullName));
+                    opt => opt.MapFrom(src => src.Landlord.FullName))
+                .ForMember(dest => dest.LandlordEmail,
+                    opt => opt.MapFrom(src => src.Landlord.Email))
+                .ForMember(dest => dest.LandlordPhone,
+                    opt => opt.MapFrom(src => src.Landlord.PhoneNumber));
 
             CreateMap<Property, PropertyListDto>()
                 .ForMember(dest => dest.Thumbnail,
