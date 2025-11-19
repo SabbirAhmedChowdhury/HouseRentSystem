@@ -373,7 +373,7 @@ MSBuild_Logs/
 # AWS SAM Build and Temporary Artifacts folder
 .aws-sam
 
-# NVidia Nsight GPU debugger configuration file
+# NVidia Nsight GPU debugger configuration filea
 *.nvuser
 
 # MFractors (Xamarin productivity tool) working folder

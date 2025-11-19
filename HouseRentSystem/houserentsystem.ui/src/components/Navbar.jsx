@@ -34,7 +34,13 @@ const Navbar = () => {
                         className="logo-img me-2"
                         onError={e => e.currentTarget.src = 'https://via.placeholder.com/42?text=HR'}
                     />
-                    <span className="fw-bold text-primary">House Rent</span>
+                    <button                        
+                        className="btn btn-outline-primary"
+                        title="Home"
+                    >
+                        <i className="bi bi-house"></i>
+                    </button>
+                    <span className="fw-bold text-primary">Home</span>
                 </a>
 
                 <button

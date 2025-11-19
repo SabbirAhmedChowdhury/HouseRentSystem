@@ -170,8 +170,12 @@ html {
 }
 
 /* Navbar brand */
-.navbar-brand .logo-img {
+.navbar-brand {
     height: 50px;
+}
+
+.logo-img {
+    height: 66px;
 }
 
 /* Footer */

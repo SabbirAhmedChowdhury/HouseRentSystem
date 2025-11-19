@@ -59,7 +59,9 @@ const LandlordDashboard = () => {
                     // Property might not have leases
                 }
             }
-            setLeases(allLeases);
+            setLeases(allLeases.filter((lease) => {
+                return lease.isActive
+            }));
             
             // Get overdue payments
             try {
