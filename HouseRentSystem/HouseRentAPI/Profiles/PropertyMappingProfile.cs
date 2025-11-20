@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using HouseRentAPI.DTOs;
 using HouseRentAPI.Models;
+using System.Linq;
 
 namespace HouseRentAPI.Profiles
 {
@@ -44,7 +45,9 @@ namespace HouseRentAPI.Profiles
                 .ForMember(dest => dest.LandlordEmail,
                     opt => opt.MapFrom(src => src.Landlord.Email))
                 .ForMember(dest => dest.LandlordPhone,
-                    opt => opt.MapFrom(src => src.Landlord.PhoneNumber));
+                    opt => opt.MapFrom(src => src.Landlord.PhoneNumber))
+                .ForMember(dest => dest.HasActiveLease,
+                    opt => opt.MapFrom(src => src.Leases != null && src.Leases.Any(l => l.IsActive)));
 
             CreateMap<Property, PropertyListDto>()
                 .ForMember(dest => dest.Thumbnail,

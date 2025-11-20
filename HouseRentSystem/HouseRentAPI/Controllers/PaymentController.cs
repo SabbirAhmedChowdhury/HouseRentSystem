@@ -71,6 +71,14 @@ namespace HouseRentAPI.Controllers
             return NoContent();
         }
 
+        [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin,Landlord")]
+        public async Task<IActionResult> DeletePayment(int id)
+        {
+            await _paymentService.DeleteUnpaidPaymentAsync(id);
+            return NoContent();
+        }
+
         [HttpPost("{id}/slip")]
         public async Task<IActionResult> UploadPaymentSlip(
             int id,

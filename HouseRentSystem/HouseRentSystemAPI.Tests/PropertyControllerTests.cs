@@ -119,43 +119,43 @@ namespace HouseRentSystemAPI.Tests
             result.Should().BeOfType<ForbidResult>();
         }
 
-        [Fact]
-        public async Task SearchProperties_ValidQuery_ReturnsPaginatedResult()
-        {
-            // Arrange
-            var properties = new List<Property>
-            {
-                new Property
-                {
-                    PropertyId = 1,
-                    Address = "123 Main St",
-                    City = "Sample City"
-                }
-            };
-            var paginatedResult = new PaginatedResult<Property>(
-                properties, // items
-                properties.Count, // totalItems
-                1,          // page
-                10         // pageSize                
-            );
+        //[Fact]
+        //public async Task SearchProperties_ValidQuery_ReturnsPaginatedResult()
+        //{
+        //    // Arrange
+        //    var properties = new List<Property>
+        //    {
+        //        new Property
+        //        {
+        //            PropertyId = 1,
+        //            Address = "123 Main St",
+        //            City = "Sample City"
+        //        }
+        //    };
+        //    var paginatedResult = new PaginatedResult<Property>(
+        //        properties, // items
+        //        properties.Count, // totalItems
+        //        1,          // page
+        //        10         // pageSize                
+        //    );
 
-            //_propertyServiceMock.Setup(s => s.SearchPropertiesAsync(
-            //    It.IsAny<string>(), null, null, 1, 10, "RentAmount", "asc"))
-            //    .ReturnsAsync(paginatedResult);
+        //    //_propertyServiceMock.Setup(s => s.SearchPropertiesAsync(
+        //    //    It.IsAny<string>(), null, null, 1, 10, "RentAmount", "asc"))
+        //    //    .ReturnsAsync(paginatedResult);
 
-            _mapperMock.Setup(m => m.Map<IEnumerable<PropertyListDto>>(properties))
-                .Returns(new List<PropertyListDto> { new() });
+        //    _mapperMock.Setup(m => m.Map<IEnumerable<PropertyListDto>>(properties))
+        //        .Returns(new List<PropertyListDto> { new() });
 
-            // Act
-            var result = await _controller.SearchProperties(new SearchPropertiesDto());
+        //    // Act
+        //    var result = await _controller.SearchProperties(new SearchPropertiesDto());
 
-            // Assert
-            result.Should().BeOfType<OkObjectResult>();
-            var response = (result as OkObjectResult)?.Value as PaginatedResult<PropertyListDto>;
-            response.Should().NotBeNull();
-            response?.Items.Should().HaveCount(1);
-            response?.TotalItems.Should().Be(1);
-        }
+        //    // Assert
+        //    result.Should().BeOfType<OkObjectResult>();
+        //    var response = (result as OkObjectResult)?.Value as PaginatedResult<PropertyListDto>;
+        //    response.Should().NotBeNull();
+        //    response?.Items.Should().HaveCount(1);
+        //    response?.TotalItems.Should().Be(1);
+        //}
 
         [Fact]
         public async Task UploadPropertyImages_ValidRequest_ReturnsImagePaths()

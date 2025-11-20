@@ -100,7 +100,7 @@ const CreateMaintenanceRequest = () => {
                                             name="description"
                                             className="form-control"
                                             rows="6"
-                                            placeholder="e.g., Leaking faucet in kitchen, AC not cooling..."
+                                            placeholder="e.g., Leaking gas in kitchen, Door lock broken..."
                                             value={form.description}
                                             onChange={handleChange}
                                             required

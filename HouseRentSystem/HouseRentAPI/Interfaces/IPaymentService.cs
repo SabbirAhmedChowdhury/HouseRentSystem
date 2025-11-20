@@ -34,6 +34,11 @@ namespace HouseRentAPI.Interfaces
         Task<RentPayment> CreateSecurityDepositPaymentAsync(int leaseId, decimal amount);
         
         /// <summary>
+        /// Deletes an unpaid payment record
+        /// </summary>
+        Task DeleteUnpaidPaymentAsync(int paymentId);
+        
+        /// <summary>
         /// Generates monthly rent payment records for all active leases
         /// Checks for existing payments and creates new ones for upcoming months
         /// </summary>

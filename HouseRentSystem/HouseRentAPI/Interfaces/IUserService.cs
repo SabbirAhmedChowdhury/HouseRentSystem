@@ -14,5 +14,6 @@ namespace HouseRentAPI.Interfaces
         Task<IEnumerable<User>> GetLandlordsAsync();
         Task<IEnumerable<User>> GetTenantsAsync();
         Task UpdatePasswordAsync(int userId, string currentPassword, string newPassword);
+        Task<IEnumerable<User>> GetUsersAsync(string? role = null, bool? isNidVerified = null, string sortDirection = "desc");
     }
 }

@@ -107,6 +107,14 @@ namespace HouseRentAPI.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpGet]
+        public async Task<IActionResult> GetUsers([FromQuery] string? role, [FromQuery] bool? isNidVerified, [FromQuery] string? sortDirection = "desc")
+        {
+            var users = await _userService.GetUsersAsync(role, isNidVerified, sortDirection ?? "desc");
+            return Ok(_mapper.Map<IEnumerable<UserProfileDto>>(users));
+        }
+
         [Authorize]
         [HttpPut("profile")]
         public async Task<IActionResult> UpdateProfile([FromBody] UserUpdateDto updateDto)

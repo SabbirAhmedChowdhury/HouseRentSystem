@@ -50,6 +50,7 @@ namespace HouseRentAPI.DTOs
         public string Description { get; set; }
         public bool IsAvailable { get; set; }
         public DateTime CreatedAt { get; set; }
+        public bool HasActiveLease { get; set; }
         /// <summary>
         /// List of image paths (for backward compatibility)
         /// </summary>

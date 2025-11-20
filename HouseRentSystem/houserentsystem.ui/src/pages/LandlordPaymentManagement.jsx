@@ -89,6 +89,23 @@ const LandlordPaymentManagement = () => {
     };
 
     /**
+     * Deletes an unpaid payment
+     * @param {number} paymentId - ID of the payment to delete
+     */
+    const handleDeletePayment = async (paymentId) => {
+        if (!window.confirm('Are you sure you want to delete this unpaid payment?')) {
+            return;
+        }
+        try {
+            await api.delete(`/payments/${paymentId}`);
+            alert('Payment deleted successfully');
+            fetchData();
+        } catch (err) {
+            alert(err.response?.data?.message || 'Failed to delete payment');
+        }
+    };
+
+    /**
      * Converts status enum/number to text
      * @param {string|number} status - Payment status (can be enum value or number)
      * @returns {string} Status text
@@ -308,6 +325,15 @@ const LandlordPaymentManagement = () => {
                                                         >
                                                             <i className="bi bi-check"></i>
                                                         </button>
+                                                        {getStatusText(payment.status) !== 'Paid' && (
+                                                            <button
+                                                                className="btn btn-sm btn-outline-danger"
+                                                                onClick={() => handleDeletePayment(payment.paymentId)}
+                                                                title="Delete Payment"
+                                                            >
+                                                                <i className="bi bi-trash"></i>
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </td>
                                             </tr>
@@ -434,6 +460,15 @@ const LandlordPaymentManagement = () => {
                                                                 title="Mark as Paid"
                                                             >
                                                                 <i className="bi bi-check"></i>
+                                                            </button>
+                                                        )}
+                                                        {getStatusText(payment.status) !== 'Paid' && (
+                                                            <button
+                                                                className="btn btn-sm btn-outline-danger"
+                                                                onClick={() => handleDeletePayment(payment.paymentId)}
+                                                                title="Delete Payment"
+                                                            >
+                                                                <i className="bi bi-trash"></i>
                                                             </button>
                                                         )}
                                                         {payment.paymentSlipPath && (

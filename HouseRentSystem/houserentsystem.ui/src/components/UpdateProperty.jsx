@@ -32,6 +32,7 @@ const UpdateProperty = () => {
     const [submitError, setSubmitError] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [loading, setLoading] = useState(true);
+    const [hasActiveLease, setHasActiveLease] = useState(false);
 
     // Fetch property on mount
     useEffect(() => {
@@ -50,6 +51,7 @@ const UpdateProperty = () => {
                     description: data.description || '',
                     isAvailable: data.isAvailable,
                 });
+                setHasActiveLease(Boolean(data.hasActiveLease));
                 
                 // Set existing images from server (use ImageDetails if available, fallback to Images)
                 // Convert relative paths to full URLs for display
@@ -380,10 +382,16 @@ const UpdateProperty = () => {
                                                     id="isAvailable"
                                                     checked={form.isAvailable}
                                                     onChange={handleChange}
+                                                    disabled={hasActiveLease}
                                                 />
                                                 <label className="form-check-label" htmlFor="isAvailable">
                                                     Property is currently available
                                                 </label>
+                                                {hasActiveLease && (
+                                                    <small className="text-muted d-block">
+                                                        Availability is locked while this property has an active lease.
+                                                    </small>
+                                                )}
                                             </div>
                                         </div>
 

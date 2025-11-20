@@ -129,6 +129,25 @@ namespace HouseRentAPI.Services
             await _unitOfWork.SaveChangesAsync();
         }
 
+        public async Task DeleteUnpaidPaymentAsync(int paymentId)
+        {
+            var paymentRepo = _unitOfWork.GetRepository<RentPayment>();
+            var payment = await paymentRepo.GetByIdAsync(paymentId);
+
+            if (payment == null)
+                throw new NotFoundException(nameof(RentPayment), paymentId);
+
+            if (payment.Status == PaymentStatus.Paid)
+            {
+                throw new BadRequestException(
+                    "Cannot delete paid payments",
+                    "Only unpaid payments can be deleted");
+            }
+
+            paymentRepo.Remove(payment);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task<IEnumerable<RentPayment>> GetPaymentsByLeaseAsync(int leaseId)
         {
             var paymentRepo = _unitOfWork.GetRepository<RentPayment>();

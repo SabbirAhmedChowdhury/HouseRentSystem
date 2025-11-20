@@ -252,7 +252,7 @@ const CreateProperty = () => {
                                                 className="form-control"
                                                 value={form.amenities}
                                                 onChange={handleChange}
-                                                placeholder="WiFi, Parking, Gym"
+                                                placeholder="Lift, Parking, Generator"
                                             />
                                         </div>
 
@@ -265,7 +265,7 @@ const CreateProperty = () => {
                                                 rows="4"
                                                 value={form.description}
                                                 onChange={handleChange}
-                                                placeholder="Spacious balcony..."
+                                                placeholder="South faced balcony..."
                                             />
                                         </div>
 

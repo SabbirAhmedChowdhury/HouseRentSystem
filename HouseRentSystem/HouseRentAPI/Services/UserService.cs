@@ -3,6 +3,8 @@ using HouseRentAPI.Exceptions;
 using HouseRentAPI.Interfaces;
 using HouseRentAPI.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace HouseRentAPI.Services
@@ -134,6 +136,28 @@ namespace HouseRentAPI.Services
         {
             var userRepo = _unitOfWork.GetRepository<User>();
             return await userRepo.FindAsync(u => u.Role == UserRole.Tenant);
+        }
+
+        public async Task<IEnumerable<User>> GetUsersAsync(string? role = null, bool? isNidVerified = null, string sortDirection = "desc")
+        {
+            var userRepo = _unitOfWork.GetRepository<User>();
+            var query = userRepo.Queryable();
+
+            if (!string.IsNullOrWhiteSpace(role) && Enum.TryParse<UserRole>(role, true, out var parsedRole))
+            {
+                query = query.Where(u => u.Role == parsedRole);
+            }
+
+            if (isNidVerified.HasValue)
+            {
+                query = query.Where(u => u.IsNIDVerified == isNidVerified.Value);
+            }
+
+            query = sortDirection?.ToLower() == "asc"
+                ? query.OrderBy(u => u.CreatedAt)
+                : query.OrderByDescending(u => u.CreatedAt);
+
+            return await query.ToListAsync();
         }
 
         public async Task UpdatePasswordAsync(int userId, string currentPassword, string newPassword)
