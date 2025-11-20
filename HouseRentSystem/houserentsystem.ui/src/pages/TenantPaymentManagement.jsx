@@ -66,6 +66,7 @@ const TenantPaymentManagement = () => {
                 },
             });
             alert('Payment slip uploaded successfully');
+            window.location.reload();
             setSelectedPayment(null);
             setSlipFile(null);
             fetchPayments();

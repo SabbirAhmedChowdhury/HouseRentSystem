@@ -133,8 +133,21 @@ const LandlordDashboard = () => {
 
     const handleRenewLease = async (leaseId) => {
         const newEndDate = renewDates[leaseId];
+        const existingEndDate = new Date(leases.filter((lease) => lease.leaseId === leaseId)[0].endDate);
         if (!newEndDate) {
             alert('Please select a new end date');
+            return;
+        }
+        if (new Date(newEndDate) <= new Date()) {
+            alert('New end date must be in the future');
+            return;
+        }
+
+        if (new Date(newEndDate) <= existingEndDate.setDate(existingEndDate.getDate() + 1)) {
+            alert('New end date must be after current end date');
+            return;
+        }
+        if (!window.confirm('Are you sure you want to renew this lease?')) {
             return;
         }
         try {
@@ -159,6 +172,9 @@ const LandlordDashboard = () => {
     };
 
     const handleUpdatePaymentStatus = async (paymentId, newStatus) => {
+        if (!window.confirm('Are you sure you want to update payment status?')) {
+            return;
+        }
         try {
             await api.put(`/payments/${paymentId}/status`, { status: newStatus });
             fetchDashboardData();

@@ -41,6 +41,9 @@ const CreateMaintenanceRequest = () => {
     };
 
     const handleSubmit = async (e) => {
+        if (!window.confirm('Are you sure you want to create the maintenance request?')) {
+            return;
+        }
         e.preventDefault();
         if (!form.description.trim()) {
             setError('Description is required');

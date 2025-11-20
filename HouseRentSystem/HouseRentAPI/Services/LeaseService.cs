@@ -167,7 +167,8 @@ namespace HouseRentAPI.Services
             // If lease is open-ended (no end date), new date must be after start date
             DateTime comparisonDate = lease.EndDate ?? lease.StartDate;
             if (newEndDate <= comparisonDate)
-                throw new BadHttpRequestException("New end date must be after current end date (or start date for open-ended leases)");
+                throw new BadRequestException("New end date must be after current end date");
+                //throw new BadRequestException("New end date must be after current end date (or start date for open-ended leases)");
 
             lease.EndDate = newEndDate;
             leaseRepo.Update(lease);

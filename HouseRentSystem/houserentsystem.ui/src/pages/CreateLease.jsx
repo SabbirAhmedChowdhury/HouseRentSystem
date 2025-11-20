@@ -88,6 +88,9 @@ const CreateLease = () => {
      * Submits the lease creation form
      */
     const handleSubmit = async (e) => {
+        if (!window.confirm('Are you sure you want to create the lease?')) {
+            return;
+        }
         e.preventDefault();
         const validationErrors = validateForm();
         if (Object.keys(validationErrors).length > 0) {
